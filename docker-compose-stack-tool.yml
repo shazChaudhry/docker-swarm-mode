@@ -2,18 +2,6 @@ version: "3"
  
 services:
     
-    techchallange:
-        image: techchallange
-        networks:
-            - proxy
-        deploy:
-            replicas: 2
-            labels:
-                - com.df.notify=true
-                - com.df.distribute=true
-                - com.df.servicePath=/techchallange
-                - com.df.port=8484
-    
     jenkins:
         image: stefanprodan/jenkins
         environment:
@@ -63,3 +51,5 @@ services:
 networks:
     proxy:
     jenkins:
+    sonar:
+    nexus:
