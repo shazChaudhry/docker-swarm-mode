@@ -1,1 +1,1 @@
-docker stack deploy -c docker-compose-stack.yml DevOps
+docker stack deploy -c docker-compose-stack-tool.yml DevOps
