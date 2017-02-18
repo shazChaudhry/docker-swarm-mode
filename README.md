@@ -25,7 +25,7 @@
 -	Check with visualizer ("http://node1:9080") to see if these services have been launched
 
 The visualizer screen should look simialar to this:
-![alt tag](Visualizer.PNG)
+![alt tag](https://github.com/shazChaudhry/techchallange/blob/master/VisualizerXXX.PNG)
 
 
 # Test:
