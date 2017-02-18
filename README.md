@@ -3,14 +3,14 @@
 -	Setting up a docker swarm cluster of three nodes
 -	Deploy DevOps tools in swarm mode via a compose file
 -	Create an ephemeral environment
-- Build & deploy sample applications in Continuous Integration mode
+-	Build & deploy sample applications in Continuous Integration mode
 
 
 # Prerequisists:
 
 -	Install Docker Toolbox (Includes Git Bash, Virtual Box)
 -	Install Vagrant + Vagrant-hostmanager
--	Clone Git repository 
+-	Clone this Git repository 
 
 
 # Instructions:
