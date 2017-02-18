@@ -19,9 +19,8 @@
 -	Run "vagrant up"(This will set up the docker swarm cluster, additionally it will install infrastructure visualizer: 		"http://node1:9080")
 -	Once "vagrant up" is finished, SSH into node1: "vagrant ssh node1"
 -	Change directory "cd /vagrant"
--	Execute "./buildApp.sh" (This will build the sample GO code docker image). Run "docker images" to ensure "techchallange" image is available
 -	Execute "./deployStack.sh" (This will launch a number of docker services in the docker swarm cluster created earlier. 
-	These services include two replicas of "techchallange", Jenkins, two replicas of HAProxy and proxy listener)
+	These services include Jenkins, SonarQube, Nexus, two replicas of HAProxy and a proxy listener)
 -	Check with visualizer ("http://node1:9080") to see if these services have been launched
 
 The visualizer screen should look simialar to this:
@@ -30,9 +29,10 @@ The visualizer screen should look simialar to this:
 
 # Test:
 
-- 	Take a short break and wait until all services ave started and are working
-- 	Check services are running "http://node1/techchallange" (Hitting "ctrl + r" should toggle between container ID's)
-- 	Check Jenkins "http://node1/jenkins" Username: admin; Password: Password01
+- 	Take a short break and wait until all services are started and are working
+- 	Check Jenkins "http://node1/jenkins". Username: admin; Password: Password01
+-	Check SonarQube "http://node1/sonar". Username: admin; Password: admin
+-	Check Nexus "http://node1/nexus". Username: admin; Password: admin123
 
 
 # Clean-up:
