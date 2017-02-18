@@ -1,0 +1,65 @@
+version: "3"
+ 
+services:
+    
+    techchallange:
+        image: techchallange
+        networks:
+            - proxy
+        deploy:
+            replicas: 2
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath=/techchallange
+                - com.df.port=8484
+    
+    jenkins:
+        image: stefanprodan/jenkins
+        environment:
+            - JENKINS_OPTS='--prefix=/jenkins'
+        networks:
+            - jenkins
+            - proxy
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /vagrant/jenkins_home:/var/jenkins_home
+            - /vagrant/ansible:/etc/ansible:/etc/ansible
+        deploy:
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath=/jenkins
+                - com.df.port=8080
+ 
+    swarm-listener:
+        image: 
+            vfarcic/docker-flow-swarm-listener
+        networks:
+            - proxy
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
+            - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+ 
+    proxy:
+        image: 
+            vfarcic/docker-flow-proxy
+        ports:
+            - 80:80
+            - 443:443
+        networks:
+            - proxy
+        environment:
+            - LISTENER_ADDRESS=swarm-listener
+            - MODE=swarm
+        deploy:
+            replicas: 2
+ 
+networks:
+    proxy:
+    jenkins:
