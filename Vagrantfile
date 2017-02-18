@@ -6,7 +6,9 @@
 ## https://github.com/devopsgroup-io/vagrant-hostmanager
 
 $docker_swarm_init = <<SCRIPT
+
 docker swarm init --advertise-addr 192.168.99.101 --listen-addr 192.168.99.101:2377
+docker swarm join-token --quiet worker > /vagrant/worker_token
 
 JENKINS_HOME=/vagrant/jenkins_home
 mkdir -p $JENKINS_HOME
@@ -19,14 +21,14 @@ chown -R 1000 $ANSIBLE_INVENTORY
 SCRIPT
 
 $docker_swarm_join = <<SCRIPT
-apt-get install sshpass
-sshpass -p vagrant ssh -oStrictHostKeyChecking=no vagrant@node1 docker swarm join-token -q worker
-docker swarm join --token $(sshpass -p vagrant ssh -o StrictHostKeyChecking=no vagrant@node1 docker swarm join-token -q worker) 192.168.99.101:2377
+
+docker swarm join --token $(cat /vagrant/worker_token) 192.168.99.101:2377
+
 SCRIPT
 
 Vagrant.configure("2") do |config|	
-	config.vm.box = "ubuntu/trusty64"
-	# config.vm.box = "ubuntu/xenial64"
+	#config.vm.box = "ubuntu/trusty64"
+	config.vm.box = "ubuntu/xenial64"
 	config.hostmanager.enabled = true
 	config.hostmanager.manage_host = true
 	config.hostmanager.manage_guest = true
