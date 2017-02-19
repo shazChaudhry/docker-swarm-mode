@@ -7,6 +7,16 @@
 
 $docker_swarm_init = <<SCRIPT
 
+mkdir -p /etc/systemd/system/docker.service.d
+touch /etc/systemd/system/docker.service.d/docker.conf
+
+echo [Service] > /etc/systemd/system/docker.service.d/docker.conf
+echo ExecStart= >> /etc/systemd/system/docker.service.d/docker.conf
+echo ExecStart=/usr/bin/dockerd -H fd:// --experimental=true >> /etc/systemd/system/docker.service.d/docker.conf
+
+systemctl daemon-reload
+systemctl restart docker
+
 docker swarm init --advertise-addr 192.168.99.101 --listen-addr 192.168.99.101:2377
 docker swarm join-token --quiet worker > /vagrant/worker_token
 
@@ -21,6 +31,16 @@ chown -R 1000 $ANSIBLE_INVENTORY
 SCRIPT
 
 $docker_swarm_join = <<SCRIPT
+
+mkdir -p /etc/systemd/system/docker.service.d
+touch /etc/systemd/system/docker.service.d/docker.conf
+
+echo [Service] > /etc/systemd/system/docker.service.d/docker.conf
+echo ExecStart= >> /etc/systemd/system/docker.service.d/docker.conf
+echo ExecStart=/usr/bin/dockerd -H fd:// --experimental=true >> /etc/systemd/system/docker.service.d/docker.conf
+
+systemctl daemon-reload
+systemctl restart docker
 
 docker swarm join --token $(cat /vagrant/worker_token) 192.168.99.101:2377
 
