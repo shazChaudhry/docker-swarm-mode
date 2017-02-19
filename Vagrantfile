@@ -28,6 +28,9 @@ ANSIBLE_INVENTORY=/vagrant/ansible
 mkdir -p $ANSIBLE_INVENTORY
 chown -R 1000 $ANSIBLE_INVENTORY
 
+NEXUS_DATA=/vagrant/nexus_data
+mkdir -p $NEXUS_DATA
+
 SCRIPT
 
 $docker_swarm_join = <<SCRIPT

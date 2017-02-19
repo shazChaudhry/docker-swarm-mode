@@ -12,14 +12,63 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - /vagrant/jenkins_home:/var/jenkins_home
-            - /vagrant/ansible:/etc/ansible:/etc/ansible
+            - /vagrant/ansible:/etc/ansible
         deploy:
             labels:
                 - com.df.notify=true
                 - com.df.distribute=true
                 - com.df.servicePath=/jenkins
                 - com.df.port=8080
- 
+    
+    nexus:
+        image: sonatype/nexus3
+        environment:
+            - NEXUS_CONTEXT=nexus
+        networks:
+            - nexus
+            - proxy
+        volumes:
+            - /vagrant/nexus_data:/nexus-data
+        deploy:
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath=/nexus
+                - com.df.port=8081
+                
+    sonarqube:
+        image: sonarqube
+        environment:
+            - SONARQUBE_JDBC_URL=jdbc:postgresql://sonardb:5432/sonar
+            - SONARQUBE_JDBC_USERNAME=sonar
+            - SONARQUBE_JDBC_PASSWORD=sonar
+        networks:
+            - sonarqube
+            - proxy
+        volumes:            
+            - sonarqube_conf:/opt/sonarqube/conf
+            - sonarqube_data:/opt/sonarqube/data
+            - sonarqube_extensions:/opt/sonarqube/extensions
+            - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins        
+        command: ["-Dsonar.web.context=/sonar"]
+        deploy:
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath=/sonar
+                - com.df.port=9000
+
+    sonardb:
+        image: postgres
+        environment:
+            - POSTGRES_USER=sonar
+            - POSTGRES_PASSWORD=sonar
+        networks:
+            - sonarqube
+        volumes:
+            - postgresql:/var/lib/postgresql
+            - postgresql_data:/var/lib/postgresql/data
+    
     swarm-listener:
         image: 
             vfarcic/docker-flow-swarm-listener
@@ -51,5 +100,13 @@ services:
 networks:
     proxy:
     jenkins:
-    sonar:
+    sonarqube:
     nexus:
+ 
+volumes:
+    sonarqube_conf:
+    sonarqube_data:
+    sonarqube_extensions:
+    sonarqube_bundled-plugins:
+    postgresql:
+    postgresql_data:
