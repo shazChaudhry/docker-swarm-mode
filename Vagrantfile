@@ -88,7 +88,7 @@ Vagrant.configure("2") do |config|
 #			v.customize ["modifyvm", :id, "--memory", 1024]
 #			v.customize ["modifyvm", :id, "--name", "node4"]
 #		end
-		node4.vm.provision :shell, inline: $docker_experimental_mode
+#		node4.vm.provision :shell, inline: $docker_experimental_mode
 #		node4.vm.provision :shell, inline: $docker_swarm_join
 #	end
 
