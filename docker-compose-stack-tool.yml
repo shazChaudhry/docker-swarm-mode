@@ -11,8 +11,8 @@ services:
             - proxy
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - /vagrant/jenkins_home:/var/jenkins_home
-            - /vagrant/ansible:/etc/ansible
+            - java_home:/var/jenkins_home
+            - ansible_home:/etc/ansible
         deploy:
             labels:
                 - com.df.notify=true
@@ -28,7 +28,7 @@ services:
             - nexus
             - proxy
         volumes:
-            - /vagrant/nexus_data:/nexus-data
+            - nexus_data:/nexus-data
         deploy:
             labels:
                 - com.df.notify=true
@@ -104,6 +104,9 @@ networks:
     nexus:
  
 volumes:
+    nexus_data:
+    java_home:
+    ansible_home:
     sonarqube_conf:
     sonarqube_data:
     sonarqube_extensions:

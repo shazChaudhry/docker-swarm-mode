@@ -5,7 +5,7 @@
 ## http://www.thisprogrammingthing.com/2015/multiple-vagrant-vms-in-one-vagrantfile/
 ## https://github.com/devopsgroup-io/vagrant-hostmanager
 
-$docker_swarm_init = <<SCRIPT
+$docker_experimental_mode = <<SCRIPT
 
 mkdir -p /etc/systemd/system/docker.service.d
 touch /etc/systemd/system/docker.service.d/docker.conf
@@ -16,41 +16,23 @@ echo ExecStart=/usr/bin/dockerd -H fd:// --experimental=true >> /etc/systemd/sys
 
 systemctl daemon-reload
 systemctl restart docker
+
+SCRIPT
+
+$docker_swarm_init = <<SCRIPT
 
 docker swarm init --advertise-addr 192.168.99.101 --listen-addr 192.168.99.101:2377
 docker swarm join-token --quiet worker > /vagrant/worker_token
 
-JENKINS_HOME=/vagrant/jenkins_home
-mkdir -p $JENKINS_HOME
-chown -R 1000 $JENKINS_HOME
-
-ANSIBLE_INVENTORY=/vagrant/ansible
-mkdir -p $ANSIBLE_INVENTORY
-chown -R 1000 $ANSIBLE_INVENTORY
-
-NEXUS_DATA=/vagrant/nexus_data
-mkdir -p $NEXUS_DATA
-
 SCRIPT
 
 $docker_swarm_join = <<SCRIPT
-
-mkdir -p /etc/systemd/system/docker.service.d
-touch /etc/systemd/system/docker.service.d/docker.conf
-
-echo [Service] > /etc/systemd/system/docker.service.d/docker.conf
-echo ExecStart= >> /etc/systemd/system/docker.service.d/docker.conf
-echo ExecStart=/usr/bin/dockerd -H fd:// --experimental=true >> /etc/systemd/system/docker.service.d/docker.conf
-
-systemctl daemon-reload
-systemctl restart docker
 
 docker swarm join --token $(cat /vagrant/worker_token) 192.168.99.101:2377
 
 SCRIPT
 
 Vagrant.configure("2") do |config|	
-	#config.vm.box = "ubuntu/trusty64"
 	config.vm.box = "ubuntu/xenial64"
 	config.hostmanager.enabled = true
 	config.hostmanager.manage_host = true
@@ -65,6 +47,7 @@ Vagrant.configure("2") do |config|
 			v.customize ["modifyvm", :id, "--memory", 4096]
 			v.customize ["modifyvm", :id, "--name", "node1"]
 		end
+		node1.vm.provision :shell, inline: $docker_experimental_mode
 		node1.vm.provision :shell, inline: $docker_swarm_init
 		node1.vm.provision "docker" do |d|
 			d.run "visualizer", 
@@ -81,6 +64,7 @@ Vagrant.configure("2") do |config|
 			v.customize ["modifyvm", :id, "--memory", 4096]
 			v.customize ["modifyvm", :id, "--name", "node2"]
 		end
+		node2.vm.provision :shell, inline: $docker_experimental_mode
 		node2.vm.provision :shell, inline: $docker_swarm_join
 	end
 	
@@ -92,6 +76,7 @@ Vagrant.configure("2") do |config|
 			v.customize ["modifyvm", :id, "--memory", 2048]
 			v.customize ["modifyvm", :id, "--name", "node3"]
 		end
+		node3.vm.provision :shell, inline: $docker_experimental_mode
 		node3.vm.provision :shell, inline: $docker_swarm_join
 	end
 	
@@ -103,6 +88,7 @@ Vagrant.configure("2") do |config|
 #			v.customize ["modifyvm", :id, "--memory", 1024]
 #			v.customize ["modifyvm", :id, "--name", "node4"]
 #		end
+		node4.vm.provision :shell, inline: $docker_experimental_mode
 #		node4.vm.provision :shell, inline: $docker_swarm_join
 #	end
 
