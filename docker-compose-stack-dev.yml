@@ -7,7 +7,7 @@ services:
         environment:
             - JENKINS_OPTS='--prefix=/jenkins'
         networks:
-            - jenkins
+            - prodnet
             - proxy
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
@@ -25,7 +25,7 @@ services:
         environment:
             - NEXUS_CONTEXT=nexus
         networks:
-            - nexus
+            - prodnet
             - proxy
         volumes:
             - nexus_data:/nexus-data
@@ -44,6 +44,7 @@ services:
             - SONARQUBE_JDBC_PASSWORD=sonar
         networks:
             - sonarqube
+            - prodnet
             - proxy
         volumes:            
             - sonarqube_conf:/opt/sonarqube/conf
@@ -68,40 +69,16 @@ services:
         volumes:
             - postgresql:/var/lib/postgresql
             - postgresql_data:/var/lib/postgresql/data
-    
-    swarm-listener:
-        image: 
-            vfarcic/docker-flow-swarm-listener
-        networks:
-            - proxy
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-        environment:
-            - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
-            - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
-        deploy:
-            placement:
-                constraints: [node.role == manager]
- 
-    proxy:
-        image: 
-            vfarcic/docker-flow-proxy
-        ports:
-            - 80:80
-            - 443:443
-        networks:
-            - proxy
-        environment:
-            - LISTENER_ADDRESS=swarm-listener
-            - MODE=swarm
-        deploy:
-            replicas: 2
  
 networks:
     proxy:
-    jenkins:
+        external: true
+    prodnet:
+        external: true
     sonarqube:
-    nexus:
+        external: true
+    gitlab:
+        external: true
  
 volumes:
     nexus_data:
