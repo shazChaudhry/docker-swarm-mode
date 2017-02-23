@@ -2,30 +2,39 @@ version: "3"
  
 services:
     
-    jenkins:
-        image: stefanprodan/jenkins
-        environment:
-            - JENKINS_OPTS='--prefix=/jenkins'
+    swarm-listener:
+        image: 
+            vfarcic/docker-flow-swarm-listener
         networks:
-            - prodnet
             - proxy
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - java_home:/var/jenkins_home
-            - ansible_home:/etc/ansible
+        environment:
+            - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
+            - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
         deploy:
-            labels:
-                - com.df.notify=true
-                - com.df.distribute=true
-                - com.df.servicePath=/jenkins
-                - com.df.port=8080
+            placement:
+                constraints: [node.role == manager]
+ 
+    proxy:
+        image: 
+            vfarcic/docker-flow-proxy
+        ports:
+            - 80:80
+            - 443:443
+        networks:
+            - proxy
+        environment:
+            - LISTENER_ADDRESS=swarm-listener
+            - MODE=swarm
+        deploy:
+            replicas: 2
     
     nexus:
         image: sonatype/nexus3
         environment:
             - NEXUS_CONTEXT=nexus
         networks:
-            - prodnet
             - proxy
         volumes:
             - nexus_data:/nexus-data
@@ -35,6 +44,17 @@ services:
                 - com.df.distribute=true
                 - com.df.servicePath=/nexus
                 - com.df.port=8081
+
+    sonardb:
+        image: postgres
+        environment:
+            - POSTGRES_USER=sonar
+            - POSTGRES_PASSWORD=sonar
+        networks:
+            - sonarqube
+        volumes:
+            - postgresql:/var/lib/postgresql
+            - postgresql_data:/var/lib/postgresql/data
                 
     sonarqube:
         image: sonarqube
@@ -44,7 +64,6 @@ services:
             - SONARQUBE_JDBC_PASSWORD=sonar
         networks:
             - sonarqube
-            - prodnet
             - proxy
         volumes:            
             - sonarqube_conf:/opt/sonarqube/conf
@@ -58,27 +77,30 @@ services:
                 - com.df.distribute=true
                 - com.df.servicePath=/sonar
                 - com.df.port=9000
-
-    sonardb:
-        image: postgres
+    
+    jenkins:
+        image: stefanprodan/jenkins
         environment:
-            - POSTGRES_USER=sonar
-            - POSTGRES_PASSWORD=sonar
+            - JENKINS_OPTS='--prefix=/jenkins'
         networks:
-            - sonarqube
+            - proxy
         volumes:
-            - postgresql:/var/lib/postgresql
-            - postgresql_data:/var/lib/postgresql/data
+            - /var/run/docker.sock:/var/run/docker.sock
+            - java_home:/var/jenkins_home
+            - ansible_home:/etc/ansible
+        deploy:
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath=/jenkins
+                - com.df.port=8080
  
 networks:
     proxy:
-        external: true
-    prodnet:
-        external: true
     sonarqube:
-        external: true
     gitlab:
-        external: true
+    logging:
+    monitor:
  
 volumes:
     nexus_data:
