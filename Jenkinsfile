@@ -8,7 +8,7 @@ pipeline {
         }
         stage('sonar') {
             steps {
-                sh 'mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000'
+                sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
             }
         }
         stage('create_image') {
