@@ -13,7 +13,8 @@ pipeline {
             steps {
                 sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
             }
-        } 
+        }
+	}
 	    
 	post {
 		always {
@@ -32,6 +33,6 @@ pipeline {
 		    sh 'This will run only if the state of the Pipeline has changed'
 		    sh 'For example, the Pipeline was previously failing but is now successful'
 		}
-    	}
     }
+  
 }
