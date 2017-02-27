@@ -32,7 +32,7 @@ pipeline {
 	    
         	stage('Build image') {
             		steps {
-                		sh 'docker version'
+                		sh 'docker build -t simple-junit .'
            		 }			
         	}
 	}
@@ -40,7 +40,6 @@ pipeline {
 	post {
 		always {
 			echo 'This will always run'
-			sh 'docker version'
 		}
 		success {
 		    	echo 'This will run only if successful'
