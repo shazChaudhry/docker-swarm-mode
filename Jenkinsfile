@@ -1,28 +1,36 @@
 pipeline {
+	/* insert Declarative Pipeline here */
 	
 	agent any	
 	
 	options {
     		// Keep the 10 most recent builds
-    		buildDiscarder(logRotator(numToKeepStr:'10')) 
+    		buildDiscarder(logRotator(numToKeepStr:'5')) 
   	}
 	
     	stages {
 	    
         	stage('Build') {
-			agent {	docker 'maven' }
+			agent {
+    				docker {
+     			 		image 'maven'
+    				}
+  			}
             		steps {
                 		sh 'mvn -Dmaven.test.failure.ignore=true clean package'
-				junit(testResults: 'target/surefire-reports/**/*.xml', allowEmptyResults: true)
+				junit(testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true)
 				archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             		}
        		 }
 	    
         	stage('Code Quality') {
+			sh 'docker version'
+			/**
 			agent {	docker 'maven' }
             		steps {
                 		sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
            		 }
+			*/
         	}
 	}
   	    
