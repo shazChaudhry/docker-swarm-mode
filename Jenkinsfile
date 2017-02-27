@@ -24,13 +24,14 @@ pipeline {
        		 }
 	    
         	stage('Code Quality') {
-			sh 'docker version'
-			/**
 			agent {	docker 'maven' }
             		steps {
                 		sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
            		 }
-			*/
+        	}
+	    
+        	stage('Build image') {
+			sh 'docker version'
         	}
 	}
   	    
