@@ -1,11 +1,6 @@
 pipeline {
 	
-	agent {
-    		// Use docker container
-    		docker {
-     			 image 'maven'
-    		}
-  	}	
+	agent any	
 	
 	options {
     		// Keep the 10 most recent builds
@@ -15,6 +10,7 @@ pipeline {
     	stages {
 	    
         	stage('build') {
+			agent {	docker 'maven' }
             		steps {
                 		sh 'mvn -Dmaven.test.failure.ignore=true clean package'
 				junit(testResults: 'target/surefire-reports/**/*.xml', allowEmptyResults: true)
@@ -23,6 +19,7 @@ pipeline {
        		 }
 	    
         	stage('sonar') {
+			agent {	docker 'maven' }
             		steps {
                 		sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
            		 }
