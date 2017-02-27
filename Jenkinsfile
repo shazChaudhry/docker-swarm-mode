@@ -31,7 +31,9 @@ pipeline {
         	}
 	    
         	stage('Build image') {
-			sh 'docker version'
+            		steps {
+                		sh 'docker version'
+           		 }			
         	}
 	}
   	    
