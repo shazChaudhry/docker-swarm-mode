@@ -35,6 +35,14 @@ pipeline {
                 		sh 'docker build -t simple-junit .'
            		 }			
         	}
+	    
+        	stage('Test') {
+            		steps {
+				echo '================================='
+                		sh 'docker run --rm simple-junit'
+				echo '================================='
+           		 }			
+        	}
 	}
   	    
 	post {
