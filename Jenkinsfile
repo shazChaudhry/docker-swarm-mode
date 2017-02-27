@@ -24,7 +24,7 @@ pipeline {
        		 }
 	    
         	stage('Code Quality') {
-			agent {	docker 'maven' }
+			//agent {	docker 'maven' }
             		steps {
 				sh 'docker run --rm -v $(pwd):/data -w /data techdivision/docker-sonar-scanner sonar-scanner'
                 		//sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
