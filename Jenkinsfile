@@ -36,7 +36,7 @@ pipeline {
            		 }			
         	}
 	    
-        	stage('Test') {
+        	stage('Test image') {
             		steps {
 				echo '================================='
                 		sh 'docker run --rm simple-junit'
