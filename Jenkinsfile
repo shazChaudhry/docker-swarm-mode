@@ -9,7 +9,7 @@ pipeline {
 	
     	stages {
 	    
-        	stage('build') {
+        	stage('Build') {
 			agent {	docker 'maven' }
             		steps {
                 		sh 'mvn -Dmaven.test.failure.ignore=true clean package'
@@ -18,7 +18,7 @@ pipeline {
             		}
        		 }
 	    
-        	stage('sonar') {
+        	stage('Code Quality') {
 			agent {	docker 'maven' }
             		steps {
                 		sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
@@ -29,6 +29,7 @@ pipeline {
 	post {
 		always {
 			echo 'This will always run'
+			sh 'docker version'
 		}
 		success {
 		    	echo 'This will run only if successful'
