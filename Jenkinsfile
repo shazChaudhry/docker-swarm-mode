@@ -1,5 +1,17 @@
 pipeline {
-	agent { docker 'maven' }
+	
+	  agent {
+    		// Use docker container
+    		docker {
+     			 image 'maven'
+    		}
+  	}	
+	
+	options {
+    		// Keep the 10 most recent builds
+    		buildDiscarder(logRotator(numToKeepStr:'10')) 
+  	}
+	
     	stages {
 	    
         	stage('build') {
