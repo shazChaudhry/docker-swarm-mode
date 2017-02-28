@@ -24,10 +24,10 @@ pipeline {
        		 }
 	    
         	stage('Code Quality') {
-			//agent {	docker 'maven' }
+			agent {	docker 'maven' }
             		steps {
-				sh 'docker run --rm -v $(pwd):/data -w /data -e SONAR_PROJECT_VERSION=1.0-SNAPSHOT -e SONAR_PROJECT_NAME= simple-junit -e SONAR_PROJECT_KEY=com.hmkcode:simple-junit -e SONAR_HOST_URL=http://node1/sonar mercuriete/sonar-scanner sonar-scanner'
-                		//sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
+				//sh 'docker run --rm -v $(pwd):/data -w /data -e SONAR_PROJECT_VERSION=1.0-SNAPSHOT -e SONAR_PROJECT_NAME= simple-junit -e SONAR_PROJECT_KEY=com.hmkcode:simple-junit -e SONAR_HOST_URL=http://node1/sonar mercuriete/sonar-scanner sonar-scanner'
+                		sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
            		 }
         	}
 	    
