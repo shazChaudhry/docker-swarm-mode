@@ -49,6 +49,7 @@ pipeline {
         	}
 	    
         	stage('Test image') {
+			agent any
             		steps {
 				echo '================================='
                 		sh 'docker run --rm simple-junit'
