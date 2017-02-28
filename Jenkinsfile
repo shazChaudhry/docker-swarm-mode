@@ -31,12 +31,14 @@ pipeline {
         	}
 	    
         	stage('Build image') {
+			agent any
             		steps {
                 		sh 'docker build -t simple-junit .'
            		 }			
         	}
 	    
         	stage('Scan image') {
+			agent any
             		steps {
                 		sh 'docker pull anchore/cli'
                 		sh 'docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name anchore anchore/cli'
