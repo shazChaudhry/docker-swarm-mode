@@ -36,6 +36,16 @@ pipeline {
            		 }			
         	}
 	    
+        	stage('Scan image') {
+            		steps {
+                		sh 'docker pull anchore/cli'
+                		sh 'docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name anchore anchore/cli'
+                		sh 'docker exec anchore anchore feeds sync'
+                		sh 'docker exec anchore anchore analyze --image simple-junit --imagetype base'
+				sh 'docker exec anchore anchore query --image simple-junit cve-scan all'
+           		 }			
+        	}
+	    
         	stage('Test image') {
             		steps {
 				echo '================================='
