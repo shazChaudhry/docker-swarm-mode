@@ -17,6 +17,7 @@ pipeline {
     				}
   			}
             		steps {
+				echo '${WORKSPACE}'
                 		sh 'mvn -Dmaven.test.failure.ignore=true clean package'
 				junit(testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true)
 				archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
