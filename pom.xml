@@ -5,10 +5,18 @@
       <groupId>com.hmkcode</groupId>
       <artifactId>simple-junit</artifactId>
       <version>1.0-SNAPSHOT</version>
-
-       <name>simple-junit</name>
+      <name>simple-junit</name>
+      <description>DevOps (Infrastructure as Code, Pipeline as Code, Docker swarm mode) demo project</description>
       <url>https://github.com/shazChaudhry/DevOps</url>
-
+      <issueManagement>
+            <system>github</system>
+            <url>https://github.com/shazChaudhry/DevOps/issues</url>
+      </issueManagement>
+      <scm>
+            <connection>scm:git:git@github.com:shazChaudhry/DevOps.git</connection>
+            <developerConnection>scm:git:git@github.com:shazChaudhry/DevOps.git</developerConnection>
+            <url>https://github.com/shazChaudhry/DevOps</url>
+      </scm>
       <properties>
             <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
             <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -16,8 +24,7 @@
             <sonar.jacoco.reportPaths>target/jacoco.exec, target/jacoco-it.exec</sonar.jacoco.reportPaths>
             <sonar.java.test.binaries>target/test-classes</sonar.java.test.binaries>
             <sonar.java.binaries>target/classes</sonar.java.binaries>
-       </properties>
-  
+       </properties>  
       <build>
             <plugins>
                   <plugin>
@@ -27,7 +34,6 @@
                   </plugin>
             </plugins>
       </build>
-
       <dependencies>
             <dependency>
                   <groupId>junit</groupId>
@@ -38,24 +44,30 @@
       </dependencies>   
       <profiles>
             <profile>
-                  <id>sonar-coverage</id>
+                  <id>sonar</id>
                   <activation>
                         <activeByDefault>true</activeByDefault>
                   </activation>
                   <build>
-                        <pluginManagement>
-                              <plugins>
-                                    <plugin>
-                                          <groupId>org.jacoco</groupId>
-                                          <artifactId>jacoco-maven-plugin</artifactId>
-                                          <version>0.7.9</version>
-                                    </plugin>
-                              </plugins>
-                        </pluginManagement>
-                        <plugins>
+                        <plugins>                              
+                              <plugin>
+                                    <groupId>org.apache.maven.plugins</groupId>
+                                    <artifactId>maven-checkstyle-plugin</artifactId>
+                                    <version>2.17</version>
+                                    <executions>
+                                          <execution>
+                                                <id>verify-style</id>
+                                                <phase>verify</phase>
+                                                <goals>
+                                                      <goal>check</goal>
+                                                </goals>
+                                          </execution>
+                                    </executions>
+                              </plugin>
                               <plugin>
                                     <groupId>org.jacoco</groupId>
                                     <artifactId>jacoco-maven-plugin</artifactId>
+                                    <version>0.7.9</version>
                                     <configuration>
                                           <append>true</append>
                                     </configuration>
