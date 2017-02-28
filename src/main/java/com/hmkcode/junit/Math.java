@@ -24,6 +24,9 @@ public class Math
       return x - y;
     }
     
-    
-    
+public double subtract2(double x, double y)
+{
+return x - y;
 }
+    
+    }
