@@ -17,7 +17,6 @@ pipeline {
     				}
   			}
             		steps {
-				sh 'echo ${WORKSPACE}'
                 		sh 'mvn -Dmaven.test.failure.ignore=true clean package'
 				junit(testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true)
 				archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
@@ -27,14 +26,12 @@ pipeline {
         	stage('Code Quality') {
 			agent {	docker 'maven' }
             		steps {
-				sh 'echo ${WORKSPACE}'
 				sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
            		 }
         	}
 	    
         	stage('Build image') {
             		steps {
-				sh 'echo ${WORKSPACE}'
                 		sh 'docker build -t simple-junit .'
            		 }			
         	}
