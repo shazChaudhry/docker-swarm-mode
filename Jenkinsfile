@@ -1,7 +1,7 @@
 pipeline {
 	/* insert Declarative Pipeline here */
 	
-	agent any	
+	agent none	
 	
 	options {
     		// Keep the 10 most recent builds
