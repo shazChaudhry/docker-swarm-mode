@@ -27,12 +27,14 @@ pipeline {
         	stage('Code Quality') {
 			agent {	docker 'maven' }
             		steps {
+				echo '${WORKSPACE}'
 				sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
            		 }
         	}
 	    
         	stage('Build image') {
             		steps {
+				echo '${WORKSPACE}'
                 		sh 'docker build -t simple-junit .'
            		 }			
         	}
