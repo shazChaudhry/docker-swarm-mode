@@ -45,6 +45,8 @@ pipeline {
                 		sh 'docker exec anchore anchore feeds sync'
                 		sh 'docker exec anchore anchore analyze --image simple-junit --imagetype base'
 				sh 'docker exec anchore anchore query --image simple-junit cve-scan all'
+				sh 'docker stop anchore'
+				sh 'docker rm anchore'
            		 }			
         	}
 	    
@@ -61,8 +63,6 @@ pipeline {
 	post {
 		always {
 			echo 'This will always run'
-			sh 'docker stop anchore'
-			sh 'docker rm anchore'
 		}
 		success {
 		    	echo 'This will run only if successful'
