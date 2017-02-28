@@ -61,6 +61,8 @@ pipeline {
 	post {
 		always {
 			echo 'This will always run'
+			sh 'docker stop anchore'
+			sh 'docker rm anchore'
 		}
 		success {
 		    	echo 'This will run only if successful'
