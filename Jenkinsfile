@@ -10,7 +10,7 @@ pipeline {
 	
     	stages {
 	    
-        	stage('Build') {
+        	stage('Build Code') {
 			agent {
     				docker {
      			 		image 'maven'
