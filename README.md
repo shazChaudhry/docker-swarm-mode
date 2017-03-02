@@ -19,7 +19,7 @@
 
 
 The visualizer screen should look simialar to this:
-![alt tag]("infra.PNG")
+![alt tag](infra.PNG?raw=true "Infrastructure")
 
 
 # Test Infrastructure:
