@@ -19,7 +19,7 @@
 
 
 The visualizer screen should look simialar to this:
-![alt tag]("https://github.com/shazChaudhry/DevOps/blob/master/infra.PNG")
+![alt tag]("infra.PNG")
 
 
 # Test Infrastructure:
