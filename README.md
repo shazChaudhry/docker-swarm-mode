@@ -19,7 +19,7 @@
 
 
 The visualizer screen should look simialar to this:
-![alt tag]("https://github.com/shazChaudhry/DevOps/blob/master/Physical%20architecture.PNG")
+![alt tag]("https://github.com/shazChaudhry/DevOps/blob/master/infra.PNG")
 
 
 # Test Infrastructure:
