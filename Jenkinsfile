@@ -1,7 +1,7 @@
 pipeline {
 	/* insert Declarative Pipeline here */
 	
-	agent any	
+	agent none	
 	
 	options {
     		// Keep the 10 most recent builds
@@ -10,7 +10,7 @@ pipeline {
 	
     	stages {
 	    
-        	stage('Build') {
+        	stage('Build Code') {
 			agent {
     				docker {
      			 		image 'maven'
@@ -26,13 +26,36 @@ pipeline {
         	stage('Code Quality') {
 			agent {	docker 'maven' }
             		steps {
-                		sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
+				sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
            		 }
         	}
 	    
         	stage('Build image') {
+			agent any
             		steps {
-                		sh 'docker version'
+                		sh 'docker build -t simple-junit .'
+           		 }			
+        	}
+	    
+        	stage('Scan image') {
+			agent any
+            		steps {
+                		sh 'docker pull anchore/cli'
+                		sh 'docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name anchore anchore/cli'
+                		sh 'docker exec anchore anchore feeds sync'
+                		sh 'docker exec anchore anchore analyze --image simple-junit --imagetype base'
+				sh 'docker exec anchore anchore query --image simple-junit cve-scan all'
+				sh 'docker stop anchore'
+				sh 'docker rm anchore'
+           		 }			
+        	}
+	    
+        	stage('Test image') {
+			agent any
+            		steps {
+				echo '================================='
+                		sh 'docker run --rm simple-junit'
+				echo '================================='
            		 }			
         	}
 	}
@@ -40,7 +63,6 @@ pipeline {
 	post {
 		always {
 			echo 'This will always run'
-			sh 'docker version'
 		}
 		success {
 		    	echo 'This will run only if successful'
