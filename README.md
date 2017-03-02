@@ -1,11 +1,11 @@
-# Demo tasks:
+## Demo tasks:
 
 -	Setting up a docker swarm cluster of 4 nodes with vagrant
 -	Deploy DevOps tools in swarm mode via a compose v3
 - Demonstrate Jenkins Blue Ocean pipelines (auto-creating jobs via Jenkinsfile in github that checks code quality (SonarQube) and runs docker image security scanning (Anchore) 
 
 
-# Prerequisists:
+### Prerequisists:
 
 -	Install Docker Toolbox (Includes Git Bash, Virtual Box)
 -	Install Vagrant + Vagrant-hostmanager
@@ -25,10 +25,10 @@ The visualizer screen should look simialar to this:
 # Test Infrastructure:
 
 - 	Take a short break and wait until all services are started
--	Visualizer is at "http://node1:9080"
-- 	Check Jenkins "http://node1/jenkins". Username: admin; Password: Password01
--	Check SonarQube "http://node1/sonar". Username: admin; Password: admin
--	Check Nexus "http://node1/nexus". Username: admin; Password: admin123
+-	Visualizer is at <a href="http://node1:9080"> 
+- 	Check Jenkins <a href="http://node1/jenkins">. Username: admin; Password: Password01
+-	Check SonarQube <a href="http://node1/sonar">. Username: admin; Password: admin
+-	Check Nexus <a href="http://node1/nexus">. Username: admin; Password: admin123
 
 # Configure Jenkins
 # Configure SonarQube
