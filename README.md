@@ -19,7 +19,7 @@
 
 
 The visualizer screen should look simialar to this:
-![alt tag](DevOps/infra.PNG?raw=true "Infrastructure")
+![alt tag](infra.PNG"Infrastructure")
 
 
 ## Test Infrastructure:
