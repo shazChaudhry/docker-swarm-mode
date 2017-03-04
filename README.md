@@ -21,7 +21,7 @@
 
 
 The visualizer screen should look simialar to this:
-![alt text](https://github.com/shazChaudhry/DevOps/blob/master/infra.PNG "Swam cluster")
+![alt text](infra.PNG "Swam cluster")
 
 
 ## Test Infrastructure:
@@ -33,7 +33,6 @@ The visualizer screen should look simialar to this:
 -	<a href="http://node1/nexus"/>Nexus</a>. Username: admin; Password: admin123
 
 ## Configure Jenkins and SonarQube
-Install the following plugins:
 ![alt text](plugins.PNG "Swam cluster")
 ## Configure Nexus
 ## Test pipeline
