@@ -5,11 +5,15 @@
 ## http://www.thisprogrammingthing.com/2015/multiple-vagrant-vms-in-one-vagrantfile/
 ## https://github.com/devopsgroup-io/vagrant-hostmanager
 
+# https://sreeninet.wordpress.com/2017/01/27/docker-1-13-experimental-features/
 $docker_experimental_mode = <<SCRIPT
-mkdir -p /etc/default
-touch /etc/default/docker
-echo DOCKER_OPTS="--experimental=true" > /etc/default/docker
-service docker restart
+mkdir -p /etc/systemd/system/docker.service.d
+touch /etc/systemd/system/docker.service.d/docker.conf
+echo [Service] > /etc/systemd/system/docker.service.d/docker.conf 
+echo ExecStart= >> /etc/systemd/system/docker.service.d/docker.conf 
+echo ExecStart=/usr/bin/dockerd -H fd:// --experimental=true >> /etc/systemd/system/docker.service.d/docker.conf
+systemctl daemon-reload
+systemctl restart docker
 SCRIPT
 
 $docker_swarm_init = <<SCRIPT
@@ -28,7 +32,7 @@ docker stack deploy -c /vagrant/docker-compose-stack.yml dev
 SCRIPT
 
 Vagrant.configure("2") do |config|	
-	config.vm.box = "ubuntu/trusty64"
+	config.vm.box = "ubuntu/xenial64"
 	config.hostmanager.enabled = true
 	config.hostmanager.manage_host = true
 	config.hostmanager.manage_guest = true
@@ -39,7 +43,7 @@ Vagrant.configure("2") do |config|
 		node1.vm.network :private_network, ip: "192.168.99.101"
 		node1.vm.provider :virtualbox do |v|
 			v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-			v.customize ["modifyvm", :id, "--memory", 3072]
+			v.customize ["modifyvm", :id, "--memory", 2048]
 			v.customize ["modifyvm", :id, "--name", "node1"]
 		end
 		node1.vm.provision :shell, inline: $docker_experimental_mode
