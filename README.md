@@ -1,24 +1,21 @@
-## Demo tasks:
+## Tasks:
 
--	Setting up a docker swarm cluster of 4 nodes with vagrant
--	Deploy DevOps tools in swarm mode via a compose v3
-- 	Demonstrate Jenkins Blue Ocean pipelines (auto-creating jobs via Jenkinsfile in github that checks code quality (SonarQube) and runs docker image security scanning (Anchore) 
+- Deploy DevOps tools in swarm mode via a compose v3
+- Demonstrate Jenkins Blue Ocean pipelines (auto-creating jobs via Jenkinsfile in github that checks code quality (SonarQube) and runs docker image security scanning (Anchore) 
 ![alt text](logical.PNG "Swam cluster")
 
-## Prerequisists:
+## Prerequisits:
 
--	Install Docker Toolbox (Includes Git Bash, Virtual Box)
--	Install latest version of Vagrant 
--	Install hostmanager plugin by running "vagrant plugin install vagrant-hostmanager". This will update host files
+-	Setup docker swarm based infrastructure. Unless you already have infrastructure setup, you may look at my <a href="https://github.com/shazChaudhry/InfraAsCode">InfraAsCode</a> repo
 -	Fork this repository
 -	Github Personal access token
 
 
 ## Instructions:
-
-- 	Clone the forked repo
--	Change to the cloned directory and run " vagrant box update" and "vagrant up" commands. This will setup a swarm cluster; 2xworkers and 2xmanagers. Furthermore this will deploy required dev tools as docker services.
-
+- Assuming you have used my <a href="https://github.com/shazChaudhry/InfraAsCode">InfraAsCode</a> repo as mentioned above, you can log into the swarm master node by executing "vagrant ssh node1". Please ensure you execute this command from the same location where Vagrantfile is
+- Once inside node1, clone the forked repo and change directory
+-	Run "docker stack deploy -c docker-compose-stack.yml dev". This will take a couple of minutes to launch stack. 
+- In your favorite web browser navigate to <a href="http://node1:9080/">Visualizer</a>. This Visualizer will show all services running in the swarm mode.
 
 The visualizer screen should look simialar to this:
 ![alt text](infra.PNG "Swam cluster")
