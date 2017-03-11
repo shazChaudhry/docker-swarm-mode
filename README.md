@@ -24,8 +24,7 @@ The visualizer screen should look simialar to this:
 ## Test Infrastructure:
 
 - Take a short break and wait until all services are started
--	<a href="http://node1:9080"/>Visualizer</a>
-- 	<a href="http://node1/jenkins"/>Jenkins</a>. You will need to create admin password
+- <a href="http://node1/jenkins"/>Jenkins</a>. You will need to create admin password
 -	<a href="http://node1/sonar"/>SonarQube</a>. Username: admin; Password: admin
 -	<a href="http://node1/nexus"/>Nexus</a>. Username: admin; Password: admin123
 
