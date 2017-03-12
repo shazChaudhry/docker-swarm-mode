@@ -107,7 +107,26 @@ services:
         networks:
             - logging
         command: |
-              -e $(cat elk/logstash.conf)
+              -e '
+              input {
+                gelf { }
+                heartbeat { }
+              }
+              filter {
+                ruby {
+                  code => "
+                    event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
+                  "
+                }
+              }
+              output {
+                elasticsearch {
+                  hosts => ["elasticsearch:9200"]
+                }
+                stdout {
+                  codec => rubydebug
+                }
+              }'
         
     kibana:
         image: kibana
