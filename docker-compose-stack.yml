@@ -12,6 +12,10 @@ services:
         environment:
             - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
             - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
+        logging:
+            driver: gelf
+            options:
+                gelf-address=udp://127.0.0.1:12201
         deploy:
             placement:
                 constraints: [node.role == manager]
@@ -27,6 +31,10 @@ services:
         environment:
             - LISTENER_ADDRESS=swarm-listener
             - MODE=swarm
+        logging:
+            driver: gelf
+            options:
+                gelf-address=udp://127.0.0.1:12201
         deploy:
             replicas: 2
     
@@ -38,6 +46,10 @@ services:
             - proxy
         volumes:
             - nexus_data:/nexus-data
+        logging:
+            driver: gelf
+            options:
+                gelf-address=udp://127.0.0.1:12201
         deploy:
             labels:
                 - com.df.notify=true
@@ -55,6 +67,10 @@ services:
         volumes:
             - postgresql:/var/lib/postgresql
             - postgresql_data:/var/lib/postgresql/data
+        logging:
+            driver: gelf
+            options:
+                gelf-address=udp://127.0.0.1:12201
                 
     sonarqube:
         image: sonarqube
@@ -71,6 +87,10 @@ services:
             - sonarqube_extensions:/opt/sonarqube/extensions
             - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins        
         command: ["-Dsonar.web.context=/sonar"]
+        logging:
+            driver: gelf
+            options:
+                gelf-address=udp://127.0.0.1:12201
         deploy:
             labels:
                 - com.df.notify=true
@@ -88,6 +108,10 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
             - java_home:/var/jenkins_home
             - ansible_home:/etc/ansible
+        logging:
+            driver: gelf
+            options:
+                gelf-address=udp://127.0.0.1:12201
         deploy:
             labels:
                 - com.df.notify=true
