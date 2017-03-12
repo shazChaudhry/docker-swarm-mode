@@ -107,7 +107,7 @@ services:
         networks:
             - logging
         command: |
-              -e "$(cat elk/logstash.conf)"
+              -e $(cat elk/logstash.conf)
         
     kibana:
         image: kibana
