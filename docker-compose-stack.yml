@@ -169,29 +169,29 @@ services:
 #        networks:
 #            - monitoring
 #            
-#    node:
-#        image: prom/node-exporter
-#        command: -collector.procfs /host/proc -collector.sysfs /host/proc -collector.filesystem.ignored-mount-points "^(sys|proc|dev|host|etc)($$|/)"
-#        deploy:
-#            mode: global
-#        volumes:
-#            - "/proc:/host/proc"
-#            - "/sys:/host/sys"
-#            - "/:/rootfs"
-#        networks:
-#            - monitoring
-#            
-#    cadvisor:
-#        image: google/cadvisor
-#        deploy:
-#            mode: global
-#        volumes:
-#            - "/:/rootfs"
-#            - "/var/run:/var/run"
-#            - "/sys:/sys"
-#            - "/var/lib/docker:/var/lib/docker"
-#        networks:
-#            - monitoring
+    node:
+        image: prom/node-exporter
+        command: -collector.procfs /host/proc -collector.sysfs /host/proc -collector.filesystem.ignored-mount-points "^(sys|proc|dev|host|etc)($$|/)"
+        deploy:
+            mode: global
+        volumes:
+            - "/proc:/host/proc"
+            - "/sys:/host/sys"
+            - "/:/rootfs"
+        networks:
+            - monitoring
+            
+    cadvisor:
+        image: google/cadvisor
+        deploy:
+            mode: global
+        volumes:
+            - "/:/rootfs"
+            - "/var/run:/var/run"
+            - "/sys:/sys"
+            - "/var/lib/docker:/var/lib/docker"
+        networks:
+            - monitoring
       
 networks:
     proxy:
