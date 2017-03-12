@@ -120,7 +120,6 @@ services:
         networks:
             - logging
             
-    services:
     registry:
         image: registry:2
 #        ports:
