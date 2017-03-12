@@ -99,7 +99,18 @@ services:
         image: elasticsearch
         networks:
             - logging
-                
+            
+    logstash:
+        image: logstash
+        ports:
+          - "12201:12201/udp"
+        networks:
+            - logging
+        command: |
+              -e '
+                $(cat elk/logstash.conf)
+                '
+        
     kibana:
         image: kibana
         ports:
@@ -108,16 +119,53 @@ services:
             - ELASTICSEARCH_URL=http://elasticsearch:9200
         networks:
             - logging
-                
-    logstash:
-        image: logstash
-        ports:
-            - 12201:12201/udp
-        environment:
-            - "$(cat elk/logstash.conf)" 
+            
+    services:
+    registry:
+        image: registry:2
+#        ports:
+#            - "5000:5000"
         networks:
-            - logging
- 
+            - proxy
+        deploy:
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath=/v2
+                - com.df.port=8080
+
+#    prometheus:
+#        build: prom
+#        image: 127.0.0.1:5000/prom
+#        ports:
+#            - "9090:9090"
+#        networks:
+#            - monitoring
+#            
+#    node:
+#        image: prom/node-exporter
+#        command: -collector.procfs /host/proc -collector.sysfs /host/proc -collector.filesystem.ignored-mount-points "^(sys|proc|dev|host|etc)($$|/)"
+#        deploy:
+#            mode: global
+#        volumes:
+#            - "/proc:/host/proc"
+#            - "/sys:/host/sys"
+#            - "/:/rootfs"
+#        networks:
+#            - monitoring
+#            
+#    cadvisor:
+#        image: google/cadvisor
+#        deploy:
+#            mode: global
+#        volumes:
+#            - "/:/rootfs"
+#            - "/var/run:/var/run"
+#            - "/sys:/sys"
+#            - "/var/lib/docker:/var/lib/docker"
+#        networks:
+#            - monitoring
+      
 networks:
     proxy:
     sonarqube:
