@@ -94,13 +94,36 @@ services:
                 - com.df.distribute=true
                 - com.df.servicePath=/jenkins
                 - com.df.port=8080
+                
+    elasticsearch:
+        image: elasticsearch
+        networks:
+            - logging
+                
+    kibana:
+        image: kibana
+        ports:
+            - 5601:5601
+        environment:
+            - ELASTICSEARCH_URL=http://elasticsearch:9200
+        networks:
+            - logging
+                
+    logstash:
+        image: logstash
+        ports:
+            - 12201:12201/udp
+        environment:
+            - "$(cat elk/logstash.conf)" 
+        networks:
+            - logging
  
 networks:
     proxy:
     sonarqube:
     gitlab:
     logging:
-    monitor:
+    monitoring:
  
 volumes:
     nexus_data:
