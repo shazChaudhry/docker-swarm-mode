@@ -178,9 +178,13 @@ services:
             - "/proc:/host/proc"
             - "/sys:/host/sys"
             - "/:/rootfs"
+        logging:
+          driver: gelf
+          options:
+            gelf-address: udp://127.0.0.1:12201
         networks:
             - monitoring
-            
+
     cadvisor:
         image: google/cadvisor
         deploy:
@@ -190,6 +194,10 @@ services:
             - "/var/run:/var/run"
             - "/sys:/sys"
             - "/var/lib/docker:/var/lib/docker"
+        logging:
+          driver: gelf
+          options:
+            gelf-address: udp://127.0.0.1:12201
         networks:
             - monitoring
       
