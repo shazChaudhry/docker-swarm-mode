@@ -14,7 +14,7 @@
 ## Instructions:
 - Assuming you have used my <a href="https://github.com/shazChaudhry/InfraAsCode">InfraAsCode</a> repo as mentioned above, you can log into the swarm master node by executing "vagrant ssh node1". Please ensure you execute this command from the same location where Vagrantfile is
 - Once inside node1, clone the forked repo and change directory
--	Run "docker stack deploy -c docker-compose-stack.yml dev". This will take a couple of minutes to launch stack. 
+- Run "docker stack deploy -c docker-compose-stack.yml dev". This will take a couple of minutes to launch stack. 
 - In your favorite web browser navigate to <a href="http://node1:9080/">Visualizer</a>. This Visualizer will show all services running in the swarm mode.
 
 The visualizer screen should look simialar to this:
@@ -24,9 +24,11 @@ The visualizer screen should look simialar to this:
 ## Test Infrastructure:
 
 - Take a short break and wait until all services are started
+- <a href="http://node1:5601">Kibana</a> 
+- Grafana yet to come
 - <a href="http://node1/jenkins"/>Jenkins</a>. You will need to create admin password
--	<a href="http://node1/sonar"/>SonarQube</a>. Username: admin; Password: admin
--	<a href="http://node1/nexus"/>Nexus</a>. Username: admin; Password: admin123
+- <a href="http://node1/sonar"/>SonarQube</a>. Username: admin; Password: admin
+- <a href="http://node1/nexus"/>Nexus</a>. Username: admin; Password: admin123
 
 ## Configure Jenkins and SonarQube
 ![alt text](plugins.PNG "Swam cluster")
