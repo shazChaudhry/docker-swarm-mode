@@ -1,4 +1,4 @@
-version: "3"
+version: "3.1"
  
 services:
     
@@ -161,14 +161,18 @@ services:
         networks:
             - logging
 
-#    prometheus:
-#        build: prom
-#        image: 127.0.0.1:5000/prom
-#        ports:
-#            - "9090:9090"
-#        networks:
-#            - monitoring
-#            
+    prometheus:
+        build: prom
+        image: 127.0.0.1:5000/prometheus
+        ports:
+            - "9090:9090"
+        logging:
+          driver: gelf
+          options:
+            gelf-address: udp://127.0.0.1:12201
+        networks:
+            - monitoring
+            
     node:
         image: prom/node-exporter
         command: -collector.procfs /host/proc -collector.sysfs /host/proc -collector.filesystem.ignored-mount-points "^(sys|proc|dev|host|etc)($$|/)"
