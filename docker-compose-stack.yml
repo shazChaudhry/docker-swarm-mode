@@ -120,50 +120,39 @@ services:
                 - com.df.port=8080
                 
     elasticsearch:
-        image: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2  
+        volumes:
+            - elasticsearchData:/usr/share/elasticsearch/data
         networks:
             - logging
+        environment:
+            xpack.security.enabled: "false"
+            xpack.monitoring.enabled: "false"
+            xpack.graph.enabled: "false"
+            xpack.watcher.enabled: "false"
             
     logstash:
-        image: logstash
+        image: docker.elastic.co/logstash/logstash:5.2.2
         ports:
           - "12201:12201/udp"
         networks:
             - logging
-        command: |
-              -e '
-              input {
-                gelf { }
-                heartbeat { }
-              }
-              filter {
-                ruby {
-                  code => "
-                    event.to_hash.keys.each { |k| event[ k.gsub('"'.'"','"'_'"') ] = event.remove(k) if k.include?'"'.'"' }
-                  "
-                }
-              }
-              output {
-                elasticsearch {
-                  hosts => ["elasticsearch:9200"]
-                }
-                stdout {
-                  codec => rubydebug
-                }
-              }'
+        volumes:
+            - ./elk/logstash/config/pipeline:/usr/share/logstash/pipeline
+            - ./elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
         
     kibana:
-        image: kibana
+        image: docker.elastic.co/kibana/kibana:5.2.2
         ports:
             - 5601:5601
-        environment:
-            - ELASTICSEARCH_URL=http://elasticsearch:9200
         networks:
             - logging
+        volumes:
+            - ./elk/kibana/config:/usr/share/kibana/config
 
     prometheus:
         build: prom
-        image: 127.0.0.1:5000/prometheus
+        image: prometheus
         ports:
             - "9090:9090"
         logging:
@@ -173,15 +162,18 @@ services:
         networks:
             - monitoring
             
-    node:
-        image: prom/node-exporter
-        command: -collector.procfs /host/proc -collector.sysfs /host/proc -collector.filesystem.ignored-mount-points "^(sys|proc|dev|host|etc)($$|/)"
+    node-exporter:
+        image: prom/node-exporter:master
+        command: -collector.procfs /host/proc -collector.sysfs /host/sys -collector.filesystem.ignored-mount-points '^/(sys|proc|dev|host|etc)($$|/)' --collector.textfile.directory /etc/node-exporter/ --collectors.enabled='conntrack,diskstats,entropy,filefd,filesystem,loadavg,mdadm,meminfo,netdev,netstat,stat,textfile,time,vmstat,ipvs'
         deploy:
             mode: global
         volumes:
             - "/proc:/host/proc"
             - "/sys:/host/sys"
             - "/:/rootfs"
+            - "/etc/hostname:/etc/host_hostname"
+        environment:
+            - HOST_HOSTNAME=/etc/host_hostname
         logging:
           driver: gelf
           options:
@@ -190,7 +182,7 @@ services:
             - monitoring
 
     cadvisor:
-        image: google/cadvisor
+        image: google/cadvisor:canary
         deploy:
             mode: global
         volumes:
@@ -222,3 +214,4 @@ volumes:
     sonarqube_bundled-plugins:
     postgresql:
     postgresql_data:
+    elasticsearchData:
