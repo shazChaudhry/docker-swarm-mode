@@ -11,27 +11,39 @@ mkdir -p /etc/systemd/system/docker.service.d
 touch /etc/systemd/system/docker.service.d/docker.conf
 echo [Service] > /etc/systemd/system/docker.service.d/docker.conf
 echo ExecStart= >> /etc/systemd/system/docker.service.d/docker.conf
-echo ExecStart=/usr/bin/dockerd -H fd:// --experimental=true --metrics-addr=0.0.0.0:4999 >> /etc/systemd/system/docker.service.d/docker.conf
+echo ExecStart=/usr/bin/dockerd -H fd:// --experimental=true >> /etc/systemd/system/docker.service.d/docker.conf
 systemctl daemon-reload
 systemctl restart docker
 SCRIPT
 
 $docker_swarm_init = <<SCRIPT
+echo "============== Initializing swarm mode ====================="
 sysctl -w vm.max_map_count=262144
 docker swarm init --advertise-addr 192.168.99.101 --listen-addr 192.168.99.101:2377
 docker swarm join-token --quiet manager > /vagrant/manager_token
 docker swarm join-token --quiet worker > /vagrant/worker_token
-
-apt install -y python-pip && pip install --upgrade pip
-pip install docker-compose
 SCRIPT
 
 $docker_swarm_join_worker = <<SCRIPT
+echo "============== Joining swarm cluster as worker ====================="
 docker swarm join --token $(cat /vagrant/worker_token) 192.168.99.101:2377
 SCRIPT
 
 $docker_swarm_join_manager = <<SCRIPT
+echo "============== Joining swarm cluster as manager ====================="
 docker swarm join --token $(cat /vagrant/manager_token) 192.168.99.101:2377
+SCRIPT
+
+$update_pkg = <<SCRIPT
+echo "============== Updating OS packages ====================="
+apt -y update && apt -y upgrade
+apt install -y python-pip && pip install --upgrade pip
+SCRIPT
+
+$install_compose = <<SCRIPT
+echo "============== Installing docker compose ====================="
+pip install docker-compose
+docker-compose version
 SCRIPT
 
 
@@ -40,7 +52,9 @@ Vagrant.configure("2") do |config|
 	config.hostmanager.enabled = true
 	config.hostmanager.manage_host = true
 	config.hostmanager.manage_guest = true
+#	config.vm.provision :shell, inline: $update_pkg
 	config.vm.provision "docker"
+#	config.vm.provision :shell, inline: $install_compose
 
 	config.vm.define "node1", primary: true do |node1|
 		node1.vm.hostname = 'node1'

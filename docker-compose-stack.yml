@@ -36,7 +36,7 @@ services:
           options:
             gelf-address: udp://127.0.0.1:12201
         deploy:
-            replicas: 2
+            replicas: 1
     
     nexus:
         image: sonatype/nexus3
@@ -85,7 +85,7 @@ services:
             - sonarqube_conf:/opt/sonarqube/conf
             - sonarqube_data:/opt/sonarqube/data
             - sonarqube_extensions:/opt/sonarqube/extensions
-            - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins        
+            - sonarqube_bundled_plugins:/opt/sonarqube/lib/bundled-plugins        
         command: ["-Dsonar.web.context=/sonar"]
         logging:
           driver: gelf
@@ -118,91 +118,10 @@ services:
                 - com.df.distribute=true
                 - com.df.servicePath=/jenkins
                 - com.df.port=8080
-                
-    elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2  
-        volumes:
-            - elasticsearchData:/usr/share/elasticsearch/data
-        networks:
-            - logging
-        environment:
-            xpack.security.enabled: "false"
-            xpack.monitoring.enabled: "false"
-            xpack.graph.enabled: "false"
-            xpack.watcher.enabled: "false"
-            
-    logstash:
-        image: docker.elastic.co/logstash/logstash:5.2.2
-        ports:
-          - "12201:12201/udp"
-        networks:
-            - logging
-        volumes:
-            - ./elk/logstash/config/pipeline:/usr/share/logstash/pipeline
-            - ./elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-        
-    kibana:
-        image: docker.elastic.co/kibana/kibana:5.2.2
-        ports:
-            - 5601:5601
-        networks:
-            - logging
-        volumes:
-            - ./elk/kibana/config:/usr/share/kibana/config
-
-    prometheus:
-        build: prom
-        image: prometheus
-        ports:
-            - "9090:9090"
-        logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
-        networks:
-            - monitoring
-            
-    node-exporter:
-        image: prom/node-exporter:master
-        command: -collector.procfs /host/proc -collector.sysfs /host/sys -collector.filesystem.ignored-mount-points '^/(sys|proc|dev|host|etc)($$|/)' --collector.textfile.directory /etc/node-exporter/ --collectors.enabled='conntrack,diskstats,entropy,filefd,filesystem,loadavg,mdadm,meminfo,netdev,netstat,stat,textfile,time,vmstat,ipvs'
-        deploy:
-            mode: global
-        volumes:
-            - "/proc:/host/proc"
-            - "/sys:/host/sys"
-            - "/:/rootfs"
-            - "/etc/hostname:/etc/host_hostname"
-        environment:
-            - HOST_HOSTNAME=/etc/host_hostname
-        logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
-        networks:
-            - monitoring
-
-    cadvisor:
-        image: google/cadvisor:canary
-        deploy:
-            mode: global
-        volumes:
-            - "/:/rootfs"
-            - "/var/run:/var/run"
-            - "/sys:/sys"
-            - "/var/lib/docker:/var/lib/docker"
-        logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
-        networks:
-            - monitoring
       
 networks:
     proxy:
     sonarqube:
-    gitlab:
-    logging:
-    monitoring:
  
 volumes:
     nexus_data:
@@ -211,7 +130,6 @@ volumes:
     sonarqube_conf:
     sonarqube_data:
     sonarqube_extensions:
-    sonarqube_bundled-plugins:
+    sonarqube_bundled_plugins:
     postgresql:
     postgresql_data:
-    elasticsearchData:
