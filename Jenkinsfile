@@ -26,7 +26,7 @@ pipeline {
 		stage('Code Quality') {
 			agent {	docker 'maven' }
 			steps {
-				sh 'mvn sonar:sonar -Dsonar.host.url=http://sonarqube/sonar'
+				sh 'mvn sonar:sonar'
 			 }
 		}
 	
