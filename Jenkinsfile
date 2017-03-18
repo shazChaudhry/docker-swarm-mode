@@ -8,56 +8,56 @@ pipeline {
     		buildDiscarder(logRotator(numToKeepStr:'5')) 
   	}
 	
-    	stages {
-	    
-        	stage('Build Code') {
+	stages {
+	
+		stage('Build Code') {
 			agent {
-    				docker {
-     			 		image 'maven'
-    				}
-  			}
-            		steps {
-                		sh 'mvn -Dmaven.test.failure.ignore=true clean package'
+				docker {
+					image 'maven'
+				}
+			}
+			steps {
+				sh 'mvn -Dmaven.test.failure.ignore=true clean package'
 				junit(testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true)
 				archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-            		}
-       		 }
-	    
-        	stage('Code Quality') {
+			}
+		 }
+	
+		stage('Code Quality') {
 			agent {	docker 'maven' }
-            		steps {
-				sh 'mvn sonar:sonar -Dsonar.host.url=http://node1/sonar'
-           		 }
-        	}
-	    
-        	stage('Build image') {
+			steps {
+				sh 'mvn sonar:sonar -Dsonar.host.url=http://sonarqube/sonar'
+			 }
+		}
+	
+		stage('Build image') {
 			agent any
-            		steps {
-                		sh 'docker build -t simple-junit .'
-           		 }			
-        	}
-	    
-        	stage('Scan image') {
+			steps {
+				sh 'docker build -t simple-junit .'
+			 }			
+		}
+	
+		stage('Scan image') {
 			agent any
-            		steps {
-                		sh 'docker pull anchore/cli'
-                		sh 'docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name anchore anchore/cli'
-                		sh 'docker exec anchore anchore feeds sync'
-                		sh 'docker exec anchore anchore analyze --image simple-junit --imagetype base'
+			steps {
+				sh 'docker pull anchore/cli'
+				sh 'docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name anchore anchore/cli'
+				sh 'docker exec anchore anchore feeds sync'
+				sh 'docker exec anchore anchore analyze --image simple-junit --imagetype base'
 				sh 'docker exec anchore anchore query --image simple-junit cve-scan all'
 				sh 'docker stop anchore'
 				sh 'docker rm anchore'
-           		 }			
-        	}
-	    
-        	stage('Test image') {
+			 }			
+		}
+	
+		stage('Test image') {
 			agent any
-            		steps {
+			steps {
 				echo '================================='
-                		sh 'docker run --rm simple-junit'
+						sh 'docker run --rm simple-junit'
 				echo '================================='
-           		 }			
-        	}
+			 }			
+		}
 	}
   	    
 	post {

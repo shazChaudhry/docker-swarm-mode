@@ -2,7 +2,7 @@
 
 - Deploy DevOps tools in swarm mode via a compose v3
 - Demonstrate Jenkins Blue Ocean pipelines (auto-creating jobs via Jenkinsfile in github that checks code quality (SonarQube) and runs docker image security scanning (Anchore) 
-![alt text](logical.PNG "Swam cluster")
+![alt text](pics/logical.PNG "Swam cluster")
 
 ## Prerequisits:
 
@@ -18,7 +18,7 @@
 - In your favorite web browser navigate to <a href="http://node1:9080/">Visualizer</a>. This Visualizer will show all services running in the swarm mode.
 
 The visualizer screen should look simialar to this:
-![alt text](infra.PNG "Swam cluster")
+![alt text](pics/infra.PNG "Swam cluster")
 
 
 ## Test Infrastructure:
@@ -31,7 +31,7 @@ The visualizer screen should look simialar to this:
 - <a href="http://node1/nexus"/>Nexus</a>. Username: admin; Password: admin123
 
 ## Configure Jenkins and SonarQube
-![alt text](plugins.PNG "Swam cluster")
+![alt text](pics/plugins.PNG "Swam cluster")
 ## Configure Nexus
 ## Test pipeline
 

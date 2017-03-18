@@ -1,1 +1,1 @@
-docker stack deploy -c docker-compose-stack.yml ci
+docker stack deploy -c docker-compose.yml ci

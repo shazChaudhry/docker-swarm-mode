@@ -52,9 +52,9 @@ Vagrant.configure("2") do |config|
 	config.hostmanager.enabled = true
 	config.hostmanager.manage_host = true
 	config.hostmanager.manage_guest = true
-#	config.vm.provision :shell, inline: $update_pkg
+	config.vm.provision :shell, inline: $update_pkg
 	config.vm.provision "docker"
-#	config.vm.provision :shell, inline: $install_compose
+	config.vm.provision :shell, inline: $install_compose
 
 	config.vm.define "node1", primary: true do |node1|
 		node1.vm.hostname = 'node1'
