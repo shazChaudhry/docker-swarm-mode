@@ -25,9 +25,7 @@ pipeline {
     stage('Build image') {
       agent any
       steps {
-        sh '''echo ${WORKSPACE}
-pwd
-docker build -t simple-junit java'''
+        sh 'docker build -t simple-junit java'
       }
     }
     stage('Scan image') {
