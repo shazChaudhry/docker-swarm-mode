@@ -9,7 +9,7 @@ pipeline {
         
       }
       steps {
-        sh 'mvn --global-settings .m2/settings.xml -Dmaven.test.failure.ignore=true clean package'
+        sh 'mvn --global-settings jenkins/config/settings.xml -Dmaven.test.failure.ignore=true clean package'
         junit(testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true)
         archiveArtifacts(artifacts: '**/target/*.jar', fingerprint: true)
       }
