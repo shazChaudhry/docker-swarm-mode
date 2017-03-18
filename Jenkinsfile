@@ -25,7 +25,7 @@ pipeline {
     stage('Build image') {
       agent any
       steps {
-        sh 'docker build -t simple-junit .'
+        sh 'docker build -t simple-junit java'
       }
     }
     stage('Scan image') {
