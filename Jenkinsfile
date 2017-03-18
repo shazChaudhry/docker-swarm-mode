@@ -19,7 +19,7 @@ pipeline {
         docker 'maven'
       }
       steps {
-        sh 'mvn sonar:sonar'
+        sh 'mvn --global-settings maven/settings.xml sonar:sonar'
       }
     }
     stage('Build image') {
