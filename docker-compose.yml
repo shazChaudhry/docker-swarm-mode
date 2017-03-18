@@ -99,8 +99,7 @@ services:
                 - com.df.port=9000
     
     jenkins:
-        build: jenkins
-        image: shaz/jenkinsci
+        image: stefanprodan/jenkins
         environment:
             - JENKINS_OPTS='--prefix=/jenkins'
         networks:
