@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
 
+	<pluginGroups>
+        <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
+    </pluginGroups>
+	
     <servers>
       <server>
         <id>nexus-release-repository</id>
@@ -25,12 +29,6 @@
               <activeByDefault>true</activeByDefault>
           </activation>
           <properties>
-              <sonar.jdbc.url>
-                jdbc:postgresql://node1:5432/sonar
-              </sonar.jdbc.url>
-              <sonar.jdbc.username>sonar</sonar.jdbc.username>
-              <sonar.jdbc.password>sonar</sonar.jdbc.password>
-              <sonar.jdbc.driverClassName>org.postgresql.Driver</sonar.jdbc.driverClassName>
               <sonar.host.url>http://node1/sonar</sonar.host.url>
           </properties>
       </profile>
