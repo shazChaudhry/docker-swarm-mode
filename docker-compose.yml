@@ -39,7 +39,10 @@ services:
             replicas: 1
     
     nexus:
-        image: sonatype/nexus3
+        image: sonatype/nexus3        
+        ports:
+            - 8082:8082
+            - 8083:8083
         environment:
             - NEXUS_CONTEXT=nexus
         networks:
