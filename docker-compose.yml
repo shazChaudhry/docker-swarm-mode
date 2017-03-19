@@ -38,27 +38,27 @@ services:
         deploy:
             replicas: 1
     
-    nexus:
-        image: sonatype/nexus3        
-        ports:
-            - 8082:8082
-            - 8083:8083
-        environment:
-            - NEXUS_CONTEXT=nexus
-        networks:
-            - proxy
-        volumes:
-            - nexus_data:/nexus-data
-        logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
-        deploy:
-            labels:
-                - com.df.notify=true
-                - com.df.distribute=true
-                - com.df.servicePath=/nexus
-                - com.df.port=8081
+#    nexus:
+#        image: sonatype/nexus3        
+#        ports:
+#            - 8082:8082
+#            - 8083:8083
+#        environment:
+#            - NEXUS_CONTEXT=nexus
+#        networks:
+#            - proxy
+#        volumes:
+#            - nexus_data:/nexus-data
+#        logging:
+#          driver: gelf
+#          options:
+#            gelf-address: udp://127.0.0.1:12201
+#        deploy:
+#            labels:
+#                - com.df.notify=true
+#                - com.df.distribute=true
+#                - com.df.servicePath=/nexus
+#                - com.df.port=8081
 
     sonardb:
         image: postgres
