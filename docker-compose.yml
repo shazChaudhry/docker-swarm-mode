@@ -3,8 +3,7 @@ version: "3.1"
 services:
     
     swarm-listener:
-        image: 
-            vfarcic/docker-flow-swarm-listener
+        image: vfarcic/docker-flow-swarm-listener
         networks:
             - proxy
         volumes:
@@ -13,16 +12,15 @@ services:
             - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
             - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
         logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
+            driver: gelf
+            options: 
+                gelf-address: udp://127.0.0.1:12201
         deploy:
             placement:
                 constraints: [node.role == manager]
  
     proxy:
-        image: 
-            vfarcic/docker-flow-proxy
+        image: vfarcic/docker-flow-proxy
         ports:
             - 80:80
             - 443:443
@@ -32,9 +30,9 @@ services:
             - LISTENER_ADDRESS=swarm-listener
             - MODE=swarm
         logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
+            driver: gelf
+            options: 
+                gelf-address: udp://127.0.0.1:12201
         deploy:
             replicas: 1
     
@@ -50,9 +48,9 @@ services:
         volumes:
             - nexus_data:/nexus-data
         logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
+            driver: gelf
+            options: 
+                gelf-address: udp://127.0.0.1:12201
         deploy:
             labels:
                 - com.df.notify=true
@@ -71,9 +69,9 @@ services:
             - postgresql:/var/lib/postgresql
             - postgresql_data:/var/lib/postgresql/data
         logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
+            driver: gelf
+            options: 
+                gelf-address: udp://127.0.0.1:12201
                 
     sonarqube:
         image: sonarqube
@@ -91,9 +89,9 @@ services:
             - sonarqube_bundled_plugins:/opt/sonarqube/lib/bundled-plugins        
         command: ["-Dsonar.web.context=/sonar"]
         logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201
+            driver: gelf
+            options: 
+                gelf-address: udp://127.0.0.1:12201
         deploy:
             labels:
                 - com.df.notify=true
@@ -112,9 +110,9 @@ services:
             - java_home:/var/jenkins_home
             - ansible_home:/etc/ansible
         logging:
-          driver: gelf
-          options:
-            gelf-address: udp://127.0.0.1:12201 
+            driver: gelf
+            options: 
+                gelf-address: udp://127.0.0.1:12201 
         deploy:
             labels:
                 - com.df.notify=true
