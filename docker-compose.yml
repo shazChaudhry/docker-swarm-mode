@@ -100,13 +100,15 @@ services:
                 - com.df.port=9000
     
     jenkins:
-        image: jenkinsci/blueocean
+        image: stefanprodan/jenkins
         environment:
             - JENKINS_OPTS='--prefix=/jenkins'
         networks:
             - proxy
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
+            - jenkins_home:/var/jenkins_home
+            - ansible_home:/etc/ansible
         logging:
             driver: gelf
             options: 
