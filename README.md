@@ -19,7 +19,7 @@
 * Once all services are up and running, proceed to testing
 
 **Test:**
-* <a href="http://node1:5601">http://node1:5601</a> (Kibana). Username: `elastic`; Password: `changeme`. On the Management tab, add two indexes; `logstash-*` and `filebeat-*`
+* <a href="http://node1:5601">http://node1:5601</a> (Kibana). Username: `elastic`; Password: `changeme`. On the Management tab, add an indexes called `logstash-*`
   * On the Kibana Discover tab, select `logstash-*` index to view logs sent by DevOps tools
 * <a href="http://node1/jenkins"/>http://node1/jenkins</a> _(Jenkins)_. Follow the setup wizard to initialize Jenkins
 * <a href="http://node1/sonar"/>http://node1/sonar</a> _(SonarQube)_. Username: admin; Password: admin
@@ -28,7 +28,9 @@
 **Test pipeline**
 * Fork a [simple java project](https://github.com/shazChaudhry/java.git). This project will be used to check code quality and run security scanning on the image generated
 * In Jenkins' pipeline editor, creat a new pipeline job by pointing it to the simple java project just forked
-* While the simple java project is being executed, visit Kibana Discover tab and select `filebeat-*` index to view Jenkins build logs
+* While the simple java project is being executed:
+  * visit Kibana Management tab and create an index called `filebeat-*`
+  * visit Kibana Discover tab and select `filebeat-*` index to view Jenkins build logs
 
 **Clean-up:**
 * On the swarm master node, run the following commands to remove swarm services:
