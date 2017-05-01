@@ -105,6 +105,7 @@ services:
             - JENKINS_OPTS='--prefix=/jenkins'
         networks:
             - proxy
+            - jenkins
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - jenkins_home:/var/jenkins_home
@@ -113,18 +114,33 @@ services:
             options:
                 gelf-address: udp://127.0.0.1:12201
         deploy:
+            placement:
+                constraints: [node.role == manager]
             labels:
                 - com.df.notify=true
                 - com.df.distribute=true
                 - com.df.servicePath=/jenkins
                 - com.df.port=8080
 
+    filebeat:
+        image: shazchaudhry/docker-filebeat
+        networks:
+            - jenkins
+        volumes:
+            - filebeat_data:/data
+            - jenkins_home:/var/jenkins_home:ro
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+
 networks:
     proxy:
+    jenkins:
     sonarqube:
 
 volumes:
     nexus_data:
+    filebeat_data:
     jenkins_home:
     sonarqube_conf:
     sonarqube_data:

@@ -1,41 +1,37 @@
-## Tasks:
-
-- Deploy DevOps tools in swarm mode via a compose v3
-- Demonstrate Jenkins Blue Ocean pipelines (auto-creating jobs via Jenkinsfile in github that checks code quality (SonarQube) and runs docker image security scanning (Anchore) 
+**User story**
+* As a member of DevOps team I want to deploy DevOps tools in swarm mode so that project can run Coninious Integration
+*  As a member of DevOps team I want to send Jenkins build logs to Elastic stack via [filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-overview.html) so that Ops team can diagnose issues by analysing all available logs in a central logging system.
+* As a member of build team I want to run Jenkins Blue Ocean pipelines that checks code quality _(SonarQube)_, archive build artifacts _(Nexus)_ and runs docker image security scanning _(Anchore)_
 ![alt text](pics/logical.PNG "Swam cluster")
 
-## Prerequisits:
+**Prerequisite**
+* Set up a development infrastructre by following [Infra as Code](https://github.com/shazChaudhry/infra) repo on github
+* Setup Elastic Stack by following [this](https://github.com/shazChaudhry/logging) github repo
 
--	Setup docker swarm based infrastructure. Unless you already have infrastructure setup, you may look at my <a href="https://github.com/shazChaudhry/InfraAsCode">InfraAsCode</a> repo
--	Fork this repository
--	Github Personal access token
+**Instructions:**
+* Log into the master node in the Docker Swarm cluster setup above
+* Clone this repository and change directory to where repo is cloned to
+* Deploy stack by run the following command:
+  * `docker stack deploy -c docker-compose.yml ci`
+* Check status of the stack services by running the following command:
+  *   `docker stack services ci`
+* In your favorite web browser navigate to <a href="http://node1:9080/">http://node1:9080/</a>. This Visualizer will show all services running in the swarm mode.
+* Once all services are up and running, proceed to testing
 
+**Test:**
+* <a href="http://node1:5601">http://node1:5601</a> (Kibana). Username: `elastic`; Password: `changeme`. On the Management tab, add two indexes; `logstash-*` and `filebeat-*`
+  * On the Kibana Discover tab, select `logstash-*` index to view logs sent by DevOps tools
+* <a href="http://node1/jenkins"/>http://node1/jenkins</a> _(Jenkins)_. Follow the setup wizard to initialize Jenkins
+* <a href="http://node1/sonar"/>http://node1/sonar</a> _(SonarQube)_. Username: admin; Password: admin
+* <a href="http://node1/nexus"/>http://node1/nexus</a> _(Nexus)_. Username: admin; Password: admin123
 
-## Instructions:
-- Assuming you have used my <a href="https://github.com/shazChaudhry/InfraAsCode">InfraAsCode</a> repo as mentioned above, you can log into the swarm master node by executing "vagrant ssh node1". Please ensure you execute this command from the same location where Vagrantfile is
-- Once inside node1, clone the forked repo and change directory
-- Run "docker stack deploy -c docker-compose-stack.yml dev". This will take a couple of minutes to launch stack. 
-- In your favorite web browser navigate to <a href="http://node1:9080/">Visualizer</a>. This Visualizer will show all services running in the swarm mode.
+**Test pipeline**
+* Fork a [simple java project](https://github.com/shazChaudhry/java.git). This project will be used to check code quality and run security scanning on the image generated
+* In Jenkins' pipeline editor, creat a new pipeline job by pointing it to the simple java project just forked
+* While the simple java project is being executed, visit Kibana Discover tab and select `filebeat-*` index to view Jenkins build logs
 
-The visualizer screen should look simialar to this:
-![alt text](pics/infra.PNG "Swam cluster")
-
-
-## Test Infrastructure:
-
-- Take a short break and wait until all services are started
-- <a href="http://node1:5601">Kibana</a> 
-- Grafana yet to come
-- <a href="http://node1/jenkins"/>Jenkins</a>. You will need to create admin password
-- <a href="http://node1/sonar"/>SonarQube</a>. Username: admin; Password: admin
-- <a href="http://node1/nexus"/>Nexus</a>. Username: admin; Password: admin123
-
-## Configure Jenkins and SonarQube
-![alt text](pics/plugins.PNG "Swam cluster")
-## Configure Nexus
-## Test pipeline
-
-## Clean-up:
-- ssh to node4 (vagrant ssh node4)
--	To remove services, execute "docker stack rm dev"
--	To tear down the infrastructure, run "vagrant destroy"
+**Clean-up:**
+* On the swarm master node, run the following commands to remove swarm services:
+  * `docker stack rm ci`
+  * `docker stack rm logging`
+*	To tear down the infrastructure, exit swarm master node and then run `vagrant destroy`
