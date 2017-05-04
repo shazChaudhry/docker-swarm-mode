@@ -127,7 +127,7 @@ services:
         networks:
             - jenkins
         volumes:
-            - filebeat_data:/data
+            - filebeat_data:/var/lib/filebeat
             - jenkins_home:/var/jenkins_home:ro
         deploy:
             placement:
