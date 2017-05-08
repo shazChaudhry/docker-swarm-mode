@@ -11,10 +11,6 @@ services:
         environment:
             - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
             - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://127.0.0.1:12201
         deploy:
             placement:
                 constraints: [node.role == manager]
@@ -29,28 +25,17 @@ services:
         environment:
             - LISTENER_ADDRESS=swarm-listener
             - MODE=swarm
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://127.0.0.1:12201
         deploy:
             replicas: 1
 
     nexus:
         image: sonatype/nexus3
-        ports:
-            - 8082:8082
-            - 8083:8083
         environment:
             - NEXUS_CONTEXT=nexus
         networks:
             - proxy
         volumes:
             - nexus_data:/nexus-data
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://127.0.0.1:12201
         deploy:
             labels:
                 - com.df.notify=true
@@ -68,10 +53,6 @@ services:
         volumes:
             - postgresql:/var/lib/postgresql
             - postgresql_data:/var/lib/postgresql/data
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://127.0.0.1:12201
 
     sonarqube:
         image: sonarqube
@@ -88,10 +69,6 @@ services:
             - sonarqube_extensions:/opt/sonarqube/extensions
             - sonarqube_bundled_plugins:/opt/sonarqube/lib/bundled-plugins
         command: ["-Dsonar.web.context=/sonar"]
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://127.0.0.1:12201
         deploy:
             labels:
                 - com.df.notify=true
@@ -105,42 +82,41 @@ services:
             - JENKINS_OPTS='--prefix=/jenkins'
         networks:
             - proxy
-            - jenkins
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - jenkins_home:/var/jenkins_home
-        logging:
-            driver: gelf
-            options:
-                gelf-address: udp://127.0.0.1:12201
+#        logging:
+#            driver: gelf
+#            options:
+#                gelf-address: udp://127.0.0.1:12201
         deploy:
-            placement:
-                constraints: [node.role == manager]
             labels:
                 - com.df.notify=true
                 - com.df.distribute=true
                 - com.df.servicePath=/jenkins
                 - com.df.port=8080
 
-    filebeat:
-        image: shazchaudhry/docker-filebeat
+    keycloak:
+        image: jboss/keycloak
+        environment:
+            - KEYCLOAK_PASSWORD=admin
+            - KEYCLOAK_USER=admin
+            - PROXY_ADDRESS_FORWARDING=true
         networks:
-            - jenkins
-        volumes:
-            - filebeat_data:/var/lib/filebeat
-            - jenkins_home:/var/jenkins_home:ro
+            - proxy
         deploy:
-            placement:
-                constraints: [node.role == manager]
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath=/
+                - com.df.port=8080
 
 networks:
     proxy:
-    jenkins:
     sonarqube:
 
 volumes:
     nexus_data:
-    filebeat_data:
     jenkins_home:
     sonarqube_conf:
     sonarqube_data:

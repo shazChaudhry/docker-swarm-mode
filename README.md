@@ -1,3 +1,5 @@
+[![Build Status on Travis](https://travis-ci.org/shazChaudhry/ci-stack.svg?branch=master "CI status on Travis")](https://travis-ci.org/shazChaudhry/ci-stack)
+
 **User story**
 * As a member of DevOps team I want to deploy DevOps tools in swarm mode so that project can run Coninious Integration
 *  As a member of DevOps team I want to send Jenkins build logs to Elastic stack via [filebeat](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-overview.html) so that Ops team can diagnose issues by analysing all available logs in a central logging system.
