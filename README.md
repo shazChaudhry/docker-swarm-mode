@@ -35,3 +35,4 @@
 *	To tear down the infrastructure, exit swarm master node and then run `vagrant destroy`
 
 **Integration with Elastic Stack**
+* See testing part of [logging](https://github.com/shazChaudhry/logging) git repository for how to send container console logs to Elastic Stack
