@@ -33,3 +33,5 @@
   * `docker stack rm ci`
   * `docker stack rm logging`
 *	To tear down the infrastructure, exit swarm master node and then run `vagrant destroy`
+
+**Integration with Elastic Stack**
