@@ -30,6 +30,7 @@ services:
 
     nexus:
         image: sonatype/nexus3
+        hostname: nexus
         environment:
             - NEXUS_CONTEXT=nexus
         networks:
@@ -56,6 +57,7 @@ services:
 
     sonarqube:
         image: sonarqube
+        hostname: sonarqube
         environment:
             - SONARQUBE_JDBC_URL=jdbc:postgresql://sonardb:5432/sonar
             - SONARQUBE_JDBC_USERNAME=sonar
@@ -77,7 +79,8 @@ services:
                 - com.df.port=9000
 
     jenkins:
-        image: quay.io/shazchaudhry/docker-jenkins
+        image: shazchaudhry/docker-jenkins
+        hostname: jenkins
         environment:
             - JENKINS_OPTS='--prefix=/jenkins'
         networks:
@@ -98,6 +101,7 @@ services:
 
     keycloak:
         image: jboss/keycloak
+        hostname: keycloak
         environment:
             - KEYCLOAK_PASSWORD=admin
             - KEYCLOAK_USER=admin
