@@ -1,4 +1,4 @@
-version: "3.1"
+version: "3.3"
 
 services:
 
@@ -79,7 +79,7 @@ services:
                 - com.df.port=9000
 
     jenkins:
-        image: shazchaudhry/docker-jenkins
+        image: quay.io/shazchaudhry/docker-jenkins
         hostname: jenkins
         environment:
             - JENKINS_OPTS='--prefix=/jenkins'
