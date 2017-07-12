@@ -16,7 +16,6 @@
   * `docker stack deploy -c docker-compose.yml ci`
 * Check status of the stack services by running the following command:
   *   `docker stack services ci`
-* In your favorite web browser navigate to <a href="http://node1:9080/">http://node1:9080/</a>. This Visualizer will show all services running in the swarm mode.
 * Once all services are up and running, proceed to testing
 
 **Test:**
