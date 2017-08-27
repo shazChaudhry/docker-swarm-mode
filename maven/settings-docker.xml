@@ -8,12 +8,12 @@
     </pluginGroups>
 	<servers>
 		<server>
-			<id>nexus-snapshots</id>
+			<id>maven-snapshots</id>
 			<username>admin</username>
 			<password>admin123</password>
 		</server>
 		<server>
-			<id>nexus-releases</id>
+			<id>maven-releases</id>
 			<username>admin</username>
 			<password>admin123</password>
 		</server>
