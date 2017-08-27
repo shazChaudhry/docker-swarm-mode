@@ -13,13 +13,16 @@
 * Log into the master node in the Docker Swarm cluster
 * Clone this repository and change directory to where repo is cloned to
 * Deploy stack by run the following command:
+  * `echo "admin" | docker secret create jenkins-user -`
+  * `echo "admin" | docker secret create jenkins-pass -`
   * `docker stack deploy -c docker-compose.yml ci`
 * Check status of the stack services by running the following command:
   *   `docker stack services ci`
 * Once all services are up and running, proceed to testing
 
 **Test:**
-* <a href="http://node1/jenkins"/>http://node1/jenkins</a> _(Jenkins)_. Follow the setup wizard to initialize Jenkins
+* <a href="http://node1:9080"/>http://node1:9080</a> _(Visualizer)_
+* <a href="http://node1/jenkins"/>http://node1/jenkins</a> _(Jenkins)_. Username: admin; Password: admin
 * <a href="http://node1/sonar"/>http://node1/sonar</a> _(SonarQube)_. Username: admin; Password: admin
 * <a href="http://node1/nexus"/>http://node1/nexus</a> _(Nexus)_. Username: admin; Password: admin123
 
