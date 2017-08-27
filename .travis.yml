@@ -19,6 +19,8 @@ before_script:
   - chmod +x *.sh
 
 script:
+  - echo "admin" | docker secret create jenkins-user -
+  - echo "admin" | docker secret create jenkins-pass
   - ./deployStack.sh
   - sleep 120 #wait for the stack to come up
 
