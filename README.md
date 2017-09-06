@@ -22,9 +22,11 @@
 
 **Test:**
 * <a href="http://node1:9080"/>http://node1:9080</a> _(Visualizer)_
-* <a href="http://node1/jenkins"/>http://node1/jenkins</a> _(Jenkins)_. Username: admin; Password: admin
-* <a href="http://node1/sonar"/>http://node1/sonar</a> _(SonarQube)_. Username: admin; Password: admin
-* <a href="http://node1/nexus"/>http://node1/nexus</a> _(Nexus)_. Username: admin; Password: admin123
+* <a href="http://node1/jenkins"/>http://node1/jenkins</a> _(Jenkins)_. Username: `admin`; Password: `admin`
+* <a href="http://node1/sonar"/>http://node1/sonar</a> _(SonarQube)_. Username: `admin`; Password: `admin`
+* <a href="http://node1/nexus"/>http://node1/nexus</a> _(Nexus)_. Username: `admin`; Password: `admin123`
+* <a href="http://node1/gitlab"/>http://node1/gitlab</a> _(Gitlab CE)_. Username: `admin@example.com`; Password: `5iveL!fe`
+  * Gitlab takes a few minutes to start up
 
 **Clean-up:**
 * On the swarm master node, run the following commands to remove swarm services:

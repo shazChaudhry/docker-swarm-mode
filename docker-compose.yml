@@ -44,7 +44,7 @@ services:
                 - com.df.servicePath=/nexus
                 - com.df.port=8081
 
-    sonardb:
+    sonarDB:
         image: postgres
         environment:
             - POSTGRES_USER=sonar
@@ -59,7 +59,7 @@ services:
         image: sonarqube
         hostname: sonarqube
         environment:
-            - SONARQUBE_JDBC_URL=jdbc:postgresql://sonardb:5432/sonar
+            - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarDB:5432/sonar
             - SONARQUBE_JDBC_USERNAME=sonar
             - SONARQUBE_JDBC_PASSWORD=sonar
         networks:
@@ -103,6 +103,77 @@ services:
                 - com.df.servicePath=/jenkins
                 - com.df.port=8080
 
+    redis:
+        image: sameersbn/redis
+        networks:
+            - gitlab
+        volumes:
+            - redisData:/var/lib/redis
+        command: ["--loglevel warning"]
+
+    gitlabDB:
+        image: sameersbn/postgresql
+        networks:
+            - gitlab
+        volumes:
+            - gitlabPostgresqlData:/var/lib/postgresql
+        environment:
+            - DB_USER=gitlab
+            - DB_PASS=password
+            - DB_NAME=gitlabhq_production
+            - DB_EXTENSION=pg_trgm
+
+    gitlab:
+        image: sameersbn/gitlab
+        networks:
+            - gitlab
+            - proxy
+        volumes:
+            - gitlabData:/home/git/data
+        environment:
+           - DEBUG=false
+           - DB_ADAPTER=postgresql
+           - DB_HOST=gitlabDB
+           - DB_PORT=5432
+           - DB_USER=gitlab
+           - DB_PASS=password
+           - DB_NAME=gitlabhq_production
+
+           - REDIS_HOST=redis
+           - REDIS_PORT=6379
+
+           - GITLAB_HTTPS=false
+           - SSL_SELF_SIGNED=false
+
+           - GITLAB_HOST=node1
+           - GITLAB_PORT=80
+           - GITLAB_SSH_PORT=22
+           - GITLAB_RELATIVE_URL_ROOT=/gitlab
+           - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+           - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
+           - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
+
+           - GITLAB_ROOT_PASSWORD=5iveL!fe
+           - GITLAB_ROOT_EMAIL=admin@example.com
+
+           - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+           - GITLAB_NOTIFY_PUSHER=false
+
+           - GITLAB_EMAIL=notifications@example.com
+           - GITLAB_EMAIL_REPLY_TO=noreply@example.com
+           - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
+
+           - GITLAB_BACKUP_SCHEDULE=daily
+           - GITLAB_BACKUP_TIME=01:00
+        deploy:
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath.1=/gitlab
+                - com.df.port.1=80
+                - com.df.servicePath.2=/gitlab
+                - com.df.port.2=22
+
     # keycloak:
     #     image: jboss/keycloak
     #     hostname: keycloak
@@ -122,6 +193,7 @@ services:
 networks:
     proxy:
     sonarqube:
+    gitlab:
 
 volumes:
     nexus_data:
@@ -132,6 +204,9 @@ volumes:
     sonarqube_bundled_plugins:
     postgresql:
     postgresql_data:
+    redisData:
+    gitlabPostgresqlData:
+    gitlabData:
 
 secrets:
     jenkins-user:
