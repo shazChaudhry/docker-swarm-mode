@@ -1,0 +1,110 @@
+version: "3.3"
+
+services:
+
+    swarm-listener:
+        image: vfarcic/docker-flow-swarm-listener
+        networks:
+            - proxy
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
+            - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+
+    proxy:
+        image: vfarcic/docker-flow-proxy
+        ports:
+            - 80:80
+            - 443:443
+        networks:
+            - proxy
+        environment:
+            - LISTENER_ADDRESS=swarm-listener
+            - MODE=swarm
+        deploy:
+            replicas: 1
+
+    redis:
+        image: sameersbn/redis
+        networks:
+            - gitlab
+        volumes:
+            - redisData:/var/lib/redis
+        command: ["--loglevel warning"]
+
+    postgresql:
+        image: sameersbn/postgresql
+        networks:
+            - gitlab
+        volumes:
+            - postgresqlData:/var/lib/postgresql
+        environment:
+            - DB_USER=gitlab
+            - DB_PASS=password
+            - DB_NAME=gitlabhq_production
+            - DB_EXTENSION=pg_trgm
+
+    gitlab:
+        image: sameersbn/gitlab
+        networks:
+            - gitlab
+            - proxy
+        volumes:
+            - gitlabData:/home/git/data
+        environment:
+           - DEBUG=false
+           - DB_ADAPTER=postgresql
+           - DB_HOST=postgresql
+           - DB_PORT=5432
+           - DB_USER=gitlab
+           - DB_PASS=password
+           - DB_NAME=gitlabhq_production
+
+           - REDIS_HOST=redis
+           - REDIS_PORT=6379
+
+           - GITLAB_HTTPS=false
+           - SSL_SELF_SIGNED=false
+
+           - GITLAB_HOST=node1
+           - GITLAB_PORT=80
+           - GITLAB_SSH_PORT=22
+           - GITLAB_RELATIVE_URL_ROOT=/gitlab
+           - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
+           - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
+           - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
+
+           - GITLAB_ROOT_PASSWORD=5iveL!fe
+           - GITLAB_ROOT_EMAIL=admin@example.com
+
+           - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
+           - GITLAB_NOTIFY_PUSHER=false
+
+           - GITLAB_EMAIL=notifications@example.com
+           - GITLAB_EMAIL_REPLY_TO=noreply@example.com
+           - GITLAB_INCOMING_EMAIL_ADDRESS=reply@example.com
+
+           - GITLAB_BACKUP_SCHEDULE=daily
+           - GITLAB_BACKUP_TIME=01:00
+        deploy:
+            labels:
+                - com.df.notify=true
+                - com.df.distribute=true
+                - com.df.servicePath.1=/gitlab
+                - com.df.port.1=80
+                - com.df.servicePath.2=/gitlab
+                - com.df.port.2=22
+
+networks:
+    proxy:
+    gitlab:
+
+
+volumes:
+   redisData:
+   postgresqlData:
+   gitlabData:
