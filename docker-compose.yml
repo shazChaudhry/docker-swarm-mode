@@ -108,7 +108,7 @@ services:
         networks:
             - gitlab
         volumes:
-            - redisData:/var/lib/redis
+            - redis_data:/var/lib/redis
         command: ["--loglevel warning"]
 
     gitlabDB:
@@ -116,7 +116,7 @@ services:
         networks:
             - gitlab
         volumes:
-            - gitlabPostgresqlData:/var/lib/postgresql
+            - gitlabPostgresql_data:/var/lib/postgresql
         environment:
             - DB_USER=gitlab
             - DB_PASS=password
@@ -125,11 +125,13 @@ services:
 
     gitlab:
         image: sameersbn/gitlab
+        ports:
+            - 10022:22
         networks:
             - gitlab
             - proxy
         volumes:
-            - gitlabData:/home/git/data
+            - gitlab_data:/home/git/data
         environment:
            - DEBUG=false
            - DB_ADAPTER=postgresql
@@ -147,7 +149,7 @@ services:
 
            - GITLAB_HOST=node1
            - GITLAB_PORT=80
-           - GITLAB_SSH_PORT=22
+           - GITLAB_SSH_PORT=10022
            - GITLAB_RELATIVE_URL_ROOT=/gitlab
            - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
            - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
@@ -165,14 +167,19 @@ services:
 
            - GITLAB_BACKUP_SCHEDULE=daily
            - GITLAB_BACKUP_TIME=01:00
+           
+          # Amazon Web Services (AWS) Remote Backups
+          #  - AWS_BACKUPS=true
+          #  - AWS_BACKUP_REGION=eu-west-2
+          #  - AWS_BACKUP_BUCKET=
+          #  - AWS_BACKUP_ACCESS_KEY_ID=
+          #  - BACKUP_SECRET_ACCESS_KEY=
         deploy:
             labels:
                 - com.df.notify=true
                 - com.df.distribute=true
-                - com.df.servicePath.1=/gitlab
-                - com.df.port.1=80
-                - com.df.servicePath.2=/gitlab
-                - com.df.port.2=22
+                - com.df.servicePath=/gitlab
+                - com.df.port=80
 
     # keycloak:
     #     image: jboss/keycloak
@@ -204,9 +211,9 @@ volumes:
     sonarqube_bundled_plugins:
     postgresql:
     postgresql_data:
-    redisData:
-    gitlabPostgresqlData:
-    gitlabData:
+    redis_data:
+    gitlabPostgresql_data:
+    gitlab_data:
 
 secrets:
     jenkins-user:
