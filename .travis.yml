@@ -4,11 +4,6 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
   - docker version
-  # Install latest version of docker-compose
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq python-pip && pip install --upgrade pip
-  - sudo pip install docker-compose
-  - docker-compose version
 
 services:
   - docker
@@ -19,9 +14,7 @@ before_script:
   - chmod +x *.sh
 
 script:
-  - echo "admin" | docker secret create jenkins-user -
-  - echo "admin" | docker secret create jenkins-pass -
-  - ./deployStack.sh
+  - ./deployStack.Vagrant.sh
   - sleep 120 #wait for the stack to come up
 
 after_script:
