@@ -8,7 +8,7 @@ services:
         networks:
             - proxy
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+            - "/var/run/docker.sock:/var/run/docker.sock"
         environment:
             - DF_NOTIFY_CREATE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/reconfigure
             - DF_NOTIFY_REMOVE_SERVICE_URL=http://proxy:8080/v1/docker-flow-proxy/remove
@@ -20,8 +20,8 @@ services:
         image: vfarcic/docker-flow-proxy
         hostname: proxy
         ports:
-            - 80:80
-            - 443:443
+            - "80:80"
+            - "443:443"
         networks:
             - proxy
         environment:
@@ -132,7 +132,7 @@ services:
         image: sameersbn/gitlab
         hostname: gitlab
         ports:
-            - 10022:22
+            - "10022:22"
         networks:
             - gitlab
             - proxy
@@ -204,25 +204,25 @@ services:
     #             - com.df.port=8080
 
 networks:
+    gitlab:
     proxy:
     sonarqube:
-    gitlab:
 
 volumes:
-    nexus_data:
+    gitlabPostgresql_data:
+    gitlab_data:
     jenkins_home:
-    sonarqube_conf:
-    sonarqube_data:
-    sonarqube_extensions:
-    sonarqube_bundled_plugins:
+    nexus_data:
     postgresql:
     postgresql_data:
     redis_data:
-    gitlabPostgresql_data:
-    gitlab_data:
+    sonarqube_bundled_plugins:
+    sonarqube_conf:
+    sonarqube_data:
+    sonarqube_extensions:
 
 secrets:
-    jenkins-user:
-      external: true
     jenkins-pass:
+      external: true
+    jenkins-user:
       external: true

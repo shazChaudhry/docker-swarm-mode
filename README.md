@@ -7,15 +7,16 @@
 ![alt text](pics/logical.PNG "Swam cluster")
 
 **Prerequisite**
-* Set up an environment based on docker swarm mode
+* Set up an environment based on docker swarm mode either by running the provided Vagrantfile or follow the instructions [Docker for AWS](https://docs.docker.com/docker-for-aws/)
 
-**Instructions:**
+**Instructions:**<br/>
+These insttructions are for the environment created by running the provided Vagrantfile. For the persistant storage solusion on AWS, please see the instcutions at the bottom:
 * Log into the master node in the Docker Swarm cluster
 * Clone this repository and change directory to where repo is cloned to
 * Deploy stack by run the following command:
   * `echo "admin" | docker secret create jenkins-user -`
   * `echo "admin" | docker secret create jenkins-pass -`
-  * `docker stack deploy -c docker-compose.yml ci`
+  * `docker stack deploy --compose-file docker-compose.yml ci`
 * Check status of the stack services by running the following command:
   *   `docker stack services ci`
 * Once all services are up and running, proceed to testing
@@ -31,3 +32,12 @@
 **Clean-up:**
 * On the swarm master node, run the following commands to remove swarm services:
   * `docker stack rm ci`
+
+**Docker for AWS persistent data volumes** <br/>
+In swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
+1. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
+2. `docker-compose version`
+3. ` docker-compose -f docker-compose.yml -f docker-compose.AWS.yml config > docker-stack.yml`
+4. `echo "admin" | docker secret create jenkins-user -`
+5. `echo "admin" | docker secret create jenkins-pass -`
+6. `docker stack deploy --compose-file docker-stack.yml ci`

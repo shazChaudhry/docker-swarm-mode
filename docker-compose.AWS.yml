@@ -1,0 +1,20 @@
+version: "3.3"
+
+volumes:
+  gitlabPostgresql_data:
+  gitlab_data:
+    driver: "cloudstor:aws"
+    driver_opts:
+      ebstype: io1
+      siz: 25
+      iops: 1000
+      backing: relocatable
+  jenkins_home:
+  nexus_data:
+  postgresql:
+  postgresql_data:
+  redis_data:
+  sonarqube_bundled_plugins:
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
