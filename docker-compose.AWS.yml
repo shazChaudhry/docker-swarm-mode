@@ -6,7 +6,7 @@ volumes:
     driver: "cloudstor:aws"
     driver_opts:
       ebstype: io1
-      siz: 25
+      size: 25
       iops: 1000
       backing: relocatable
   jenkins_home:
