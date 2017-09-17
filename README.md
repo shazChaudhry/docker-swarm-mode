@@ -42,11 +42,11 @@ Clone this repo and change directory: <br/>
 3. `git clone https://github.com/shazChaudhry/ci-stack.git && cd ci-stack`
 
 Combine both the base and environment specific compose files:<br/> 
-4. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
-5. `docker-compose version`
-6. ` docker-compose -f docker-compose.yml -f docker-compose.AWS.yml config > docker-stack.yml`
+1. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
+2. `docker-compose version`
+3. ` docker-compose -f docker-compose.yml -f docker-compose.AWS.yml config > docker-stack.yml`
 
 Run the combined stack:<br/>
-7. `echo "admin" | docker secret create jenkins-user -`
-5. `echo "admin" | docker secret create jenkins-pass -`
-6. `docker stack deploy --compose-file docker-stack.yml ci`
+1. `echo "admin" | docker secret create jenkins-user -`
+2. `echo "admin" | docker secret create jenkins-pass -`
+3. `docker stack deploy --compose-file docker-stack.yml ci`
