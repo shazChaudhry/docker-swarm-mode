@@ -53,7 +53,7 @@ Run the combined stack:<br/>
 2. `echo "admin" | docker secret create jenkins-pass -`
 3. `docker stack deploy --compose-file docker-stack.yml ci`
    - the above is currently not working and throwing this error: `yaml: control characters are not allowed`
-   - _SOLUTION:-_ Open the generated "docker-stack.yml ci" file and deleted the first line starting with a WARNING
+   - _SOLUTION:-_ Open the generated "docker-stack.yml" file and deleted the first line starting with a WARNING
 
 Clean up:<br/>
 1. `docker stack rm ci`
