@@ -59,3 +59,4 @@ Run the combined stack:<br/>
 Clean up:<br/>
 1. `docker stack rm ci`
 2. `swarm-exec docker system prune --volumes -af`
+3. Before deleting a Docker4AWS stack through CloudFormation, you should remove all relocatable Cloudstor volumes using docker volume rm from within the stack. EBS volumes corresponding to relocatable Cloudstor volumes are not automatically deleted as part of the CloudFormation stack deletion
