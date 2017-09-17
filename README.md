@@ -39,14 +39,23 @@ In swarm mode, only a single Compose file is accepted. If your configuration is 
 Clone this repo and change directory: <br/>
 1. `alias git='docker run -it --rm --name git -v $PWD:/git -w /git indiehosters/git git'`
 2. `git version`
-3. `git clone https://github.com/shazChaudhry/ci-stack.git && cd ci-stack`
+3. `git clone https://github.com/shazChaudhry/ci-stack.git`
+4. `sudo chown -R docker ci-stack`
+5. `cd ci-stack`
 
 Combine both the base and environment specific compose files:<br/> 
 1. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
 2. `docker-compose version`
-3. ` docker-compose -f docker-compose.yml -f docker-compose.AWS.yml config > docker-stack.yml`
+3. `docker-compose -f docker-compose.yml -f docker-compose.AWS.yml config > docker-stack.yml`
 
 Run the combined stack:<br/>
 1. `echo "admin" | docker secret create jenkins-user -`
 2. `echo "admin" | docker secret create jenkins-pass -`
 3. `docker stack deploy --compose-file docker-stack.yml ci`
+   - the above is currently not working and throwing this error: `yaml: control characters are not allowed`
+   - _SOLUTION:-_ Open the generated "docker-stack.yml ci" file and deleted the first line starting with a WARNING
+
+Clean up:<br/>
+1. `docker stack rm ci`
+2. `swarm-exec docker system prune -af`
+3. `swarm-exec docker volume prune -f`
