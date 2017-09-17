@@ -35,9 +35,18 @@ These insttructions are for the environment created by running the provided Vagr
 
 **Docker for AWS persistent data volumes** <br/>
 In swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
-1. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
-2. `docker-compose version`
-3. ` docker-compose -f docker-compose.yml -f docker-compose.AWS.yml config > docker-stack.yml`
-4. `echo "admin" | docker secret create jenkins-user -`
+
+Clone this repo and change directory: <br/>
+1. `alias git='docker run -it --rm --name git -v $PWD:/git -w /git indiehosters/git git'`
+2. `git version`
+3. `git clone https://github.com/shazChaudhry/ci-stack.git && cd ci-stack`
+
+Combine both the base and environment specific compose files:<br/> 
+4. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
+5. `docker-compose version`
+6. ` docker-compose -f docker-compose.yml -f docker-compose.AWS.yml config > docker-stack.yml`
+
+Run the combined stack:<br/>
+7. `echo "admin" | docker secret create jenkins-user -`
 5. `echo "admin" | docker secret create jenkins-pass -`
 6. `docker stack deploy --compose-file docker-stack.yml ci`
