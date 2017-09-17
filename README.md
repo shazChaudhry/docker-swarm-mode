@@ -58,4 +58,4 @@ Run the combined stack:<br/>
 
 Clean up:<br/>
 1. `docker stack rm ci`
-2. `swarm-exec docker system prune ----volumes -af`
+2. `swarm-exec docker system prune --volumes -af`
