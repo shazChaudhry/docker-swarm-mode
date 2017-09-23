@@ -37,6 +37,7 @@ services:
             - NEXUS_CONTEXT=nexus
         networks:
             - proxy
+            - attachable
         volumes:
             - nexus_data:/nexus-data
         deploy:
@@ -68,6 +69,7 @@ services:
         networks:
             - sonarqube
             - proxy
+            - attachable
         volumes:
             - sonarqube_conf:/opt/sonarqube/conf
             - sonarqube_data:/opt/sonarqube/data
@@ -205,8 +207,10 @@ services:
 
 networks:
     gitlab:
-    proxy:
     sonarqube:
+    proxy:
+    attachable:
+      attachable: true
 
 volumes:
     gitlabPostgresql_data:

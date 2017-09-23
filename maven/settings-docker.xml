@@ -24,7 +24,7 @@
 			<id>nexus</id>
 			<mirrorOf>external:*</mirrorOf>
 			<!-- your address may differ: -->
-			<url>http://node1/nexus/repository/maven-public/</url>
+			<url>http://nexus:8081/nexus/repository/maven-public/</url>
 		</mirror>
 	</mirrors>
 	<profiles>
@@ -35,7 +35,7 @@
             </activation>
             <properties>
                 <!-- Optional URL to server. Default value is http://localhost:9000 -->
-                <sonar.host.url>http://node1/sonar</sonar.host.url>
+                <sonar.host.url>http://sonarqube:9000/sonar</sonar.host.url>
             </properties>
     	</profile>
 		<profile>
