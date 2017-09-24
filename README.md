@@ -40,13 +40,13 @@ Clone this repo and change directory: <br/>
 1. `alias git='docker run -it --rm --name git -v $PWD:/git -w /git indiehosters/git git'`
 2. `git version`
 3. `git clone https://github.com/shazChaudhry/ci-stack.git`
-4. `sudo chown -R docker ci-stack`
+4. `sudo chown -R $USER ci-stack`
 5. `cd ci-stack`
 
-Combine both the base and environment specific compose files:<br/> 
+Combine both the base and environment specific compose files:<br/>
 1. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
 2. `docker-compose version`
-3. `docker-compose -f docker-compose.yml -f docker-compose.AWS.yml config > docker-stack.yml`
+3. `docker-compose -f docker-compose.yml -f docker-compose.AWS.cloudstor.yml config > docker-stack.yml`
 
 Run the combined stack:<br/>
 1. `echo "admin" | docker secret create jenkins-user -`
@@ -54,7 +54,7 @@ Run the combined stack:<br/>
 3. `docker stack deploy --compose-file docker-stack.yml ci`
   - It appears that there are multiple bugs when combining multiple compose files. The above _"stack deploy"_ does not work and throws this error: `yaml: control characters are not allowed`
     - _SOLUTION 1:-_ Open the generated "docker-stack.yml" file and delete the first line starting with a WARNING
-    - _SOLUTION 2:-_ Ensure that the source path for settings.xml file mounted into jenkins' home directory is correct in the generated file 
+    - _SOLUTION 2:-_ Ensure that the source path for settings.xml file mounted into jenkins' home directory is correct in the generated file
 
 Clean up:<br/>
 1. `docker stack rm ci`

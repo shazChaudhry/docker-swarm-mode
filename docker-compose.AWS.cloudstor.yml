@@ -42,10 +42,3 @@ volumes:
       size: 25
       iops: 1000
       backing: relocatable
-  postgresql:
-  postgresql_data:
-  redis_data:
-  sonarqube_bundled_plugins:
-  sonarqube_conf:
-  sonarqube_data:
-  sonarqube_extensions:
