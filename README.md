@@ -47,6 +47,7 @@ Combine both the base and environment specific compose files:<br/>
 1. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
 2. `docker-compose version`
 3. `docker-compose -f docker-compose.yml -f docker-compose.AWS.cloudstor.yml config > docker-stack.yml`
+  - Please note that if metricbeat is also being combined with -f flag than on each cluster node, grant explicit access to the Metricbeat user with a filesystem ACL by running `setfacl -m u:1000:rw /var/run/docker.sock` command. Otherwise, docker stats will not be shown.
 
 Run the combined stack:<br/>
 1. `echo "admin" | docker secret create jenkins-user -`
