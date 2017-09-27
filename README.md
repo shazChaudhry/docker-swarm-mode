@@ -7,16 +7,18 @@
 ![alt text](pics/logical.PNG "Swam cluster")
 
 **Prerequisite**
-* Set up an environment based on docker swarm mode either by running the provided Vagrantfile or follow the instructions [Docker for AWS](https://docs.docker.com/docker-for-aws/)
+* Docker swarm mode environment is required
 
 **Instructions:**<br/>
 These insttructions are for the environment created by running the provided Vagrantfile. For the persistant storage solusion on AWS, please see the instcutions at the bottom:
 * Log into the master node in the Docker Swarm cluster
 * Clone this repository and change directory to where repo is cloned to
 * Deploy stack by run the following command:
-  * `echo "admin" | docker secret create jenkins-user -`
-  * `echo "admin" | docker secret create jenkins-pass -`
-  * `docker stack deploy --compose-file docker-compose.yml ci`
+    ```
+    echo "admin" | docker secret create jenkins-user -
+    echo "admin" | docker secret create jenkins-pass -
+    docker stack deploy --compose-file docker-compose.yml ci
+    ```
 * Check status of the stack services by running the following command:
   *   `docker stack services ci`
 * Once all services are up and running, proceed to testing
@@ -27,7 +29,7 @@ These insttructions are for the environment created by running the provided Vagr
 * <a href="http://node1/sonar"/>http://node1/sonar</a> _(SonarQube)_. admin username: `admin`; Password: `admin`
 * <a href="http://node1/nexus"/>http://node1/nexus</a> _(Nexus)_. admin username: `admin`; Password: `admin123`
 * <a href="http://node1/gitlab"/>http://node1/gitlab</a> _(Gitlab CE)_. admin username: `admin@example.com`; Password: `5iveL!fe`
-  * Gitlab takes a few minutes to start up
+  * Gitlab takes a few minutes to become available
 
 **Clean-up:**
 * On the swarm master node, run the following commands to remove swarm services:
@@ -47,7 +49,6 @@ Combine both the base and environment specific compose files:<br/>
 1. `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'`
 2. `docker-compose version`
 3. `docker-compose -f docker-compose.yml -f docker-compose.AWS.cloudstor.yml config > docker-stack.yml`
-  - Please note that if metricbeat is also being combined with -f flag than on each cluster node, grant explicit access to the Metricbeat user with a filesystem ACL by running `setfacl -m u:1000:rw /var/run/docker.sock` command. Otherwise, docker stats will not be shown.
 
 Run the combined stack:<br/>
 1. `echo "admin" | docker secret create jenkins-user -`

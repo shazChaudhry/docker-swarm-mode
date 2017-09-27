@@ -1,28 +1,5 @@
 version: "3.3"
 
-services:
-
-  # portainer:
-  #   image: portainer/portainer # https://portainer.readthedocs.io/en/stable/deployment.html
-  #   ports:
-  #       - "9000:9000"
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   command: ["-H", "unix:///var/run/docker.sock"]
-  #   deploy:
-  #     placement:
-  #       constraints: [node.role == manager]
-
-  visualizer:
-    image: dockersamples/visualizer
-    ports:
-      - "9999:8080/tcp"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-
 volumes:
   gitlabPostgresql_data:
     driver: "cloudstor:aws"

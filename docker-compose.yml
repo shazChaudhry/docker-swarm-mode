@@ -28,7 +28,7 @@ services:
             - LISTENER_ADDRESS=swarm-listener
             - MODE=swarm
         deploy:
-            replicas: 1
+            replicas: 2
 
     nexus:
         image: sonatype/nexus3
