@@ -26,7 +26,7 @@ The **assumption** here is that Vagrant, Virtual Box and Gitbash are already ins
 * Once all services are up and running, proceed to testing
 
 #### Test
-* <a href="http://node1:9080"/>http://node1:9080</a> _(Visualizer)_
+* <a href="http://node1:9999"/>http://node1:9999</a> _(Visualizer)_
 * <a href="http://node1/jenkins"/>http://node1/jenkins</a> _(Jenkins)_. admin username: `admin`; Password: `admin`
 * <a href="http://node1/sonar"/>http://node1/sonar</a> _(SonarQube)_. admin username: `admin`; Password: `admin`
 * <a href="http://node1/nexus"/>http://node1/nexus</a> _(Nexus)_. admin username: `admin`; Password: `admin123`
@@ -34,13 +34,22 @@ The **assumption** here is that Vagrant, Virtual Box and Gitbash are already ins
   * Gitlab takes a few minutes to become available so please be a little patient :)
 
 #### Clean-up
-On the swarm master node, run the following commands to remove swarm services:
-* `docker stack rm ci`
+On the swarm master node, run the following commands:
+* `docker stack rm ci` to remove the stack
+* `exit` to exit the Virtual Box
+* `vagrant destroy` to destroy the VMs
 
 ### Deploy CI stack on "Docker for AWS"
-In a Docker swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
+It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation to create a new VPC. Follow these commands in an ssh client to log into your master node _(I'm using gitbash)_
+```
+  eval $(ssh-agent)
+  ssh-add -k ~/.ssh/myKey.pem
+  ssh-add -L
+  ssh -A docker@<Manager Public IP>
+  ```
+**Please** note you can not ssh directly into a worker node. You have to use a manager node as a jump box
 
-Clone this repo and change directory for following these commands
+Clone this repo and change directory by following these commands
 ```
   alias git='docker run -it --rm --name git -v $PWD:/git -w /git indiehosters/git git'
   git version
@@ -49,7 +58,7 @@ Clone this repo and change directory for following these commands
   cd ci-stack
   ```
 
-Combine both the base and environment specific compose files
+In a Docker swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
 ```
   alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'
   docker-compose version
