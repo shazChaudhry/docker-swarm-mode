@@ -87,7 +87,7 @@ If in case the above _"stack deploy"_ does not work and throws an error like `ya
 * http://[DefaultDNSTarget]/jenkins _(Jenkins)_. admin username: `admin`; Password: `admin`
 * http://[DefaultDNSTarget]/sonar> _(SonarQube)_. admin username: `admin`; Password: `admin`
 * http://[DefaultDNSTarget]/nexus _(Nexus)_. admin username: `admin`; Password: `admin123`
-* http://[DefaultDNSTarget]/gitlab> _(Gitlab CE)_. admin username: `admin@example.com`; Password: `5iveL!fe`
+* http://[DefaultDNSTarget]/gitlab _(Gitlab CE)_. admin username: `admin@example.com`; Password: `5iveL!fe`
   * Gitlab takes a few minutes to become available so please be a little patient :)
   * You find [DefaultDNSTarget] on the CloudFormation page on the Outputs tab
 
