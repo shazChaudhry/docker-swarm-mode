@@ -40,14 +40,17 @@ On the swarm master node, run the following commands:
 * `vagrant destroy` to destroy the VMs
 
 ### Deploy CI stack on "Docker for AWS"
-It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation to create a new VPC. Follow these commands in an ssh client to log into your master node _(I'm using gitbash)_
+It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation to create a new VPC. Follow these commands in an ssh client to log into your master node _(I'm using gitbash)_. **Please** note you can not ssh directly into a worker node. You have to use a manager node as a jump box
 ```
   eval $(ssh-agent)
   ssh-add -k ~/.ssh/myKey.pem
   ssh-add -L
   ssh -A docker@<Manager Public IP>
+  cat /etc/*-release
+  docker node ls
   ```
-**Please** note you can not ssh directly into a worker node. You have to use a manager node as a jump box
+
+Due to permission issues on Alpine based EC2 instances created above, Jenkins in this stack is unable to run sibling containers and the following command fails to set appropriate permission: `sudo setfacl -m u:1000:rw /var/run/docker.sock`. A workround is `sudo chmod 666 /var/run/docker.sock` on all nodes
 
 Clone this repo and change directory by following these commands
 ```
@@ -67,7 +70,7 @@ In a Docker swarm mode, only a single Compose file is accepted. If your configur
   docker-compose -f docker-compose.yml -f docker-compose.AWS.cloudstor.yml config > docker-stack.yml
   ```
 
- You may be interested in knowing that the generated stack defines a volume plugin called [Cloudstor](https://docs.docker.com/docker-for-aws/persistent-data-volumes/). Docker containers can use a volume created with Cloudstor _(available across entire cluster)_ to mount a persistent data volume
+You may be interested in knowing that the generated stack defines a volume plugin called [Cloudstor](https://docs.docker.com/docker-for-aws/persistent-data-volumes/). Docker containers can use a volume created with Cloudstor _(available across entire cluster)_ to mount a persistent data volume
 
  Run the combined stack
 ```
