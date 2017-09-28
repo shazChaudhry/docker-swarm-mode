@@ -58,6 +58,8 @@ Clone this repo and change directory by following these commands
   cd ci-stack
   ```
 
+Start the visualizer by running `docker stack deploy -c docker-compose.visualizer.yml visualizer`
+
 In a Docker swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
 ```
   alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'
@@ -65,7 +67,7 @@ In a Docker swarm mode, only a single Compose file is accepted. If your configur
   docker-compose -f docker-compose.yml -f docker-compose.AWS.cloudstor.yml config > docker-stack.yml
   ```
 
- You may be interested in knowing that the generated stack defines a volume plugin called [Cloudstor](https://docs.docker.com/docker-for-aws/persistent-data-volumes/). Docker containers can use a volume created with Cloudstor _(across entire cluster)_ to mount a persistent data volume
+ You may be interested in knowing that the generated stack defines a volume plugin called [Cloudstor](https://docs.docker.com/docker-for-aws/persistent-data-volumes/). Docker containers can use a volume created with Cloudstor _(available across entire cluster)_ to mount a persistent data volume
 
  Run the combined stack
 ```
@@ -76,6 +78,15 @@ In a Docker swarm mode, only a single Compose file is accepted. If your configur
 If in case the above _"stack deploy"_ does not work and throws an error like `yaml: control characters are not allowed`
 - _SOLUTION 1:-_ Open the generated "docker-stack.yml" file and delete the first line starting with a WARNING
 - _SOLUTION 2:-_ Ensure that the source path for settings.xml file mounted into jenkins' container is correct
+
+#### Test
+* http://[DefaultDNSTarget]:9999 _(Visualizer)_
+* http://[DefaultDNSTarget]/jenkins _(Jenkins)_. admin username: `admin`; Password: `admin`
+* http://[DefaultDNSTarget]/sonar> _(SonarQube)_. admin username: `admin`; Password: `admin`
+* http://[DefaultDNSTarget]/nexus _(Nexus)_. admin username: `admin`; Password: `admin123`
+* http://[DefaultDNSTarget]/gitlab> _(Gitlab CE)_. admin username: `admin@example.com`; Password: `5iveL!fe`
+  * Gitlab takes a few minutes to become available so please be a little patient :)
+  * You find [DefaultDNSTarget] on the CloudFormation page on the Outputs tab
 
 #### Clean up
 1. `docker stack rm ci`
