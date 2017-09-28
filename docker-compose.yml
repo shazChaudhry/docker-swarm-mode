@@ -90,6 +90,7 @@ services:
             - JENKINS_OPTS='--prefix=/jenkins'
         networks:
             - proxy
+            - attachable
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./maven:/maven
