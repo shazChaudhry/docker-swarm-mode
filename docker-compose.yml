@@ -93,7 +93,6 @@ services:
             - attachable
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - $PWD/maven:/maven
             - jenkins_home:/var/jenkins_home
         secrets: # See how secrets are used in this jenkins image at: https://github.com/shazChaudhry/docker-jenkins/blob/master/config/security.groovy
             - jenkins-user
@@ -102,6 +101,9 @@ services:
 #            driver: gelf
 #            options:
 #                gelf-address: udp://127.0.0.1:12201
+        configs: # https://docs.docker.com/compose/compose-file/#long-syntax
+            - source: maven_settings
+              target: /maven/settings-docker.xml
         deploy:
             labels:
                 - com.df.notify=true
@@ -231,3 +233,7 @@ secrets:
       external: true
     jenkins-user:
       external: true
+
+configs:
+  maven_settings:
+    file: $PWD/maven/settings-docker.xml
