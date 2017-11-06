@@ -14,7 +14,7 @@ Docker swarm mode environment is required
 The **assumption** here is that Vagrant, Virtual Box and Gitbash are already install on your machine
 * Log into the master node in the Docker Swarm mode cluster `vagrant ssh`
 * Clone this repository `git clone https://github.com/shazChaudhry/docker-swam-mode.git`
-* Change directory `cd ci-stack`
+* Change directory `cd docker-swam-mode`
 * Deploy stack by run the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/)
     ```
     echo "admin" | docker secret create jenkins-user -
@@ -40,7 +40,9 @@ On the swarm master node, run the following commands:
 * `vagrant destroy` to destroy the VMs
 
 ### Deploy CI stack on "Docker for AWS"
-It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation to create a new VPC. Follow these commands in an ssh client to log into your master node _(I'm using gitbash)_. **Please** note you can not ssh directly into a worker node. You have to use a manager node as a jump box
+It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation to create a new VPC. Follow these commands in an ssh client to log into your master node _(I'm using gitbash)_.
+
+**Please** note you can not ssh directly into worker nodes. You have to use a manager node as a jump box
 ```
   eval $(ssh-agent)
   ssh-add -k ~/.ssh/myKey.pem
@@ -50,18 +52,21 @@ It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-
   docker node ls
   ```
 
-Due to permission issues on Alpine based EC2 instances created above, Jenkins in this stack is unable to run sibling containers and the following command fails to set appropriate permission: `sudo setfacl -m u:1000:rw /var/run/docker.sock`. A workround is `sudo chmod 666 /var/run/docker.sock` on all nodes
+Due to permission issues on Alpine based EC2 instances created above, Jenkins in this stack is unable to run sibling containers and the following command fails to set appropriate permission: `sudo setfacl -m u:1000:rw /var/run/docker.sock`.
+
+A workround is `sudo chmod 666 /var/run/docker.sock` on all nodes
 
 Clone this repo and change directory by following these commands
 ```
   alias git='docker run -it --rm --name git -v $PWD:/git -w /git indiehosters/git git'
   git version
   git clone https://github.com/shazChaudhry/docker-swam-mode.git
-  sudo chown -R $USER ci-stack
-  cd ci-stack
+  sudo chown -R $USER docker-swam-mode
+  cd docker-swam-mode
   ```
 
-Start the visualizer by running `docker stack deploy -c docker-compose.visualizer.yml visualizer`
+Start the visualizer by running:
+- `docker stack deploy -c docker-compose.visualizer.yml visualizer`
 
 In a Docker swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
 ```
