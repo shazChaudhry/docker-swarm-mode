@@ -13,7 +13,7 @@ Docker swarm mode environment is required
 ### Deploy CI stack in a Virtual Box with provided Vagrantfile
 The **assumption** here is that Vagrant, Virtual Box and Gitbash are already install on your machine
 * Log into the master node in the Docker Swarm mode cluster `vagrant ssh`
-* Clone this repository `git clone https://github.com/shazChaudhry/ci-stack.git`
+* Clone this repository `git clone https://github.com/shazChaudhry/docker-swam-mode.git`
 * Change directory `cd ci-stack`
 * Deploy stack by run the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/)
     ```
@@ -56,7 +56,7 @@ Clone this repo and change directory by following these commands
 ```
   alias git='docker run -it --rm --name git -v $PWD:/git -w /git indiehosters/git git'
   git version
-  git clone https://github.com/shazChaudhry/ci-stack.git
+  git clone https://github.com/shazChaudhry/docker-swam-mode.git
   sudo chown -R $USER ci-stack
   cd ci-stack
   ```
