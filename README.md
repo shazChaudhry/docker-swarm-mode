@@ -44,7 +44,7 @@ It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-
 
 **Please** note you can not ssh directly into worker nodes. You have to use a manager node as a jump box
 ```
-  eval $(ssh-agent) _`OR`_ exec ssh-agent bash
+  eval $(ssh-agent) OR exec ssh-agent bash
   ssh-add -k ~/.ssh/personal.pem
   ssh-add -L
   ssh -A docker@<Manager Public IP>
