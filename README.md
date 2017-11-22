@@ -1,4 +1,4 @@
-[![Build Status on Travis](https://travis-ci.org/shazChaudhry/ci-stack.svg?branch=master "CI status on Travis")](https://travis-ci.org/shazChaudhry/ci-stack)
+[![Build Status on Travis](https://travis-ci.org/shazChaudhry/docker-swam-mode.svg?branch=master "CI status on Travis")](https://travis-ci.org/shazChaudhry/docker-swam-mode)
 
 ### User story
 As a member of DevOps team, I want to stand up DevOps tools _(Platform as Code)_ so that projects can run Coninious Integration / Delivery
