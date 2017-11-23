@@ -17,7 +17,7 @@ services:
                 constraints: [node.role == manager]
 
     proxy:
-        image: vfarcic/docker-flow-proxy
+        image: vfarcic/docker-flow-proxy:17.11.11-56
         hostname: proxy
         ports:
             - "80:80"
