@@ -39,15 +39,15 @@ Vagrant.configure("2") do |config|
 		end
 	end
 
-	# config.vm.define "node2" do |node2|
-	# 	node2.vm.hostname = 'node2'
-	# 	node2.vm.network :private_network, ip: "192.168.99.102"
-	# 	node2.vm.provider :virtualbox do |v|
-	# 		v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-	# 		v.customize ["modifyvm", :id, "--memory", 4000]
-	# 		v.customize ["modifyvm", :id, "--name", "node2"]
-	# 	end
-	# 	node2.vm.provision :shell, inline: $docker_swarm_join_worker
-	# end
+	config.vm.define "node2" do |node2|
+		node2.vm.hostname = 'node2'
+		node2.vm.network :private_network, ip: "192.168.99.102"
+		node2.vm.provider :virtualbox do |v|
+			v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+			v.customize ["modifyvm", :id, "--memory", 4000]
+			v.customize ["modifyvm", :id, "--name", "node2"]
+		end
+		node2.vm.provision :shell, inline: $docker_swarm_join_worker
+	end
 
 end

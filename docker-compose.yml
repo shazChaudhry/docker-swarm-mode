@@ -40,6 +40,11 @@ services:
             - attachable
         volumes:
             - nexus_data:/nexus-data
+        healthcheck:
+            test: ["CMD", "curl", "--fail", "http://localhost/service/metrics/healthcheck"]
+            interval: 60s
+            timeout: 5s
+            retries: 3
         deploy:
             labels:
                 - com.df.notify=true
@@ -85,6 +90,7 @@ services:
 
     jenkins:
         image: quay.io/shazchaudhry/docker-jenkins
+        user: root
         hostname: jenkins
         environment:
             - JENKINS_OPTS='--prefix=/jenkins'

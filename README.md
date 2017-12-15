@@ -8,7 +8,7 @@ As a member of DevOps team, I want to stand up DevOps tools _(Platform as Code)_
 ### Prerequisite
 Docker swarm mode environment is required
 - Use provided `Vagrantfile` if you are unable to run Docker CE natively on a local machine
-- See [Docker on AWS](https://docs.docker.com/docker-for-aws/) documentation on how to create a Docker swarm cluster on AWS
+- *OR* see [Docker on AWS](https://docs.docker.com/docker-for-aws/) documentation on how to create a Docker swarm cluster on AWS
 
 ### Deploy CI stack in a Virtual Box with provided Vagrantfile
 The **assumption** here is that Vagrant, Virtual Box and Gitbash are already install on your machine
@@ -52,9 +52,8 @@ It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-
   docker node ls
   ```
 
-Due to permission issues on Alpine based EC2 instances created above, Jenkins in this stack is unable to run sibling containers and the following command fails to set appropriate permission: `sudo setfacl -m u:1000:rw /var/run/docker.sock`.
-
-A workround is `sudo chmod 666 /var/run/docker.sock` on all nodes
+Note:
+> If Jenkins in this stack is unable to run sibling containers, set appropriate permission: `sudo setfacl -m u:1000:rw /var/run/docker.sock` on all nodes. If this command fails then a workround is `sudo chmod 666 /var/run/docker.sock` on all nodes
 
 Clone this repo and change directory by following these commands
 ```
