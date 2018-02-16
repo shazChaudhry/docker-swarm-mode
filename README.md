@@ -3,7 +3,7 @@
 ### User story
 As a member of DevOps team, I want to stand up DevOps tools _(Platform as Code)_ so that projects can run Coninious Integration / Delivery
 
-![alt text](pics/CI_Stack.jpg "Swam cluster")
+![alt text](pics/CI_Stack.jpg "Swarm cluster")
 
 ### Prerequisite
 Docker swarm mode environment is required
@@ -13,8 +13,8 @@ Docker swarm mode environment is required
 ### Deploy CI stack in a Virtual Box with provided Vagrantfile
 The **assumption** here is that Vagrant, Virtual Box and Gitbash are already install on your machine
 * Log into the master node in the Docker Swarm mode cluster `vagrant ssh`
-* Clone this repository `git clone https://github.com/shazChaudhry/docker-swam-mode.git`
-* Change directory `cd docker-swam-mode`
+* Clone this repository `git clone https://github.com/shazChaudhry/docker-swarm-mode.git`
+* Change directory `cd docker-swarm-mode`
 * Deploy stack by run the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/)
     ```
     echo "admin" | docker secret create jenkins-user -
@@ -59,7 +59,7 @@ Clone this repo and change directory by following these commands
 ```
   alias git='docker run -it --rm --name git -v $PWD:/git -w /git indiehosters/git git'
   git version
-  git clone https://github.com/shazChaudhry/docker-swam-mode.git
+  git clone https://github.com/shazChaudhry/docker-swarm-mode.git
   sudo chown -R $USER docker-swam-mode
   cd docker-swam-mode
   ```
