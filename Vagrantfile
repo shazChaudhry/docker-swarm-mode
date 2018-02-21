@@ -29,13 +29,13 @@ Vagrant.configure("2") do |config|
 		end
 		node1.vm.provision :shell, inline: $docker_swarm_init
 		node1.vm.provision "docker" do |d|
-			d.run "visualizer",
-				image: "dockersamples/visualizer",
-				args: "-it -p 9999:8080 -v /var/run/docker.sock:/var/run/docker.sock"
-    #   d.run "Portainer",
-		# 		image: "portainer/portainer",
-    #     cmd: "-H unix:///var/run/docker.sock --no-auth",
-		# 		args: "-it -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock"
+			# d.run "visualizer",
+			# 	image: "dockersamples/visualizer",
+			# 	args: "-it -p 9999:8080 -v /var/run/docker.sock:/var/run/docker.sock"
+      d.run "Portainer",
+				image: "portainer/portainer",
+        cmd: "-H unix:///var/run/docker.sock --no-auth",
+				args: "-it -p 9090:9000 -v /var/run/docker.sock:/var/run/docker.sock"
 		end
 	end
 
