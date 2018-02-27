@@ -23,6 +23,7 @@ services:
             - "80:80"
             - "443:443"
             - "8083:8083"
+            - "10022:10022"
         networks:
             - proxy
         environment:
@@ -149,8 +150,6 @@ services:
     gitlab:
         image: sameersbn/gitlab
         hostname: gitlab
-        ports:
-            - "10022:22"
         networks:
             - gitlab
             - proxy
@@ -202,8 +201,12 @@ services:
             labels:
                 - com.df.notify=true
                 - com.df.distribute=true
-                - com.df.servicePath=/gitlab
-                - com.df.port=80
+                - com.df.servicePath.1=/gitlab
+                - com.df.port.1=80
+                - com.df.srcPort.1=80
+                - com.df.port.2=22
+                - com.df.srcPort.2=10022
+                - com.df.reqMode.2=tcp
 
     # keycloak:
     #     image: jboss/keycloak
