@@ -60,8 +60,8 @@ Clone this repo and change directory by following these commands
   alias git='docker run -it --rm --name git -v $PWD:/git -w /git indiehosters/git git'
   git version
   git clone https://github.com/shazChaudhry/docker-swarm-mode.git
-  sudo chown -R $USER docker-swam-mode
-  cd docker-swam-mode
+  sudo chown -R $USER:$USER docker-swarm-mode
+  cd docker-swarm-mode
   ```
 
 Start the visualizer by running:
