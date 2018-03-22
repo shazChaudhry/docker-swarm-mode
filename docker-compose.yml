@@ -235,6 +235,11 @@ volumes:
     gitlabPostgresql_data:
     gitlab_data:
     jenkins_home:
+      # See 'REX-Ray Docker volume plug-ins' documentaion; volume available across entire docker swarm cluster
+      # https://rexray.readthedocs.io/en/v0.9.0/user-guide/docker-plugins/#elastic-block-service
+      # driver: rexray/ebs
+      # driver_opts:
+      #   size: 5
     nexus_data:
     postgresql:
     postgresql_data:
