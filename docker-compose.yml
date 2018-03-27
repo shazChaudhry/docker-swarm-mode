@@ -22,16 +22,16 @@ services:
         ports:
             - "80:80"
             - "443:443"
-            - "8083:8083"
+            - "5000:5000"
             - "10022:10022"
         networks:
             - proxy
         environment:
             - LISTENER_ADDRESS=swarm-listener
             - MODE=swarm
-            - BIND_PORTS=8083
-        deploy:
-            replicas: 1
+            - BIND_PORTS=5000
+        secrets:
+            - cert-xip.io.pem
 
     # See this blog on how to set up docker registry (ports 8082 and 8083 are for docker proxy and hosted repos): https://blog.sonatype.com/using-nexus-3-as-your-repository-part-3-docker-images
     nexus:
@@ -50,15 +50,13 @@ services:
                 - com.df.distribute=true
                 - com.df.servicePath.1=/nexus
                 - com.df.port.1=8081
-                - com.df.srcPort.1=80
+                - com.df.srcPort.1=443
                 - com.df.servicePath.2=/
-                # port 8082 is reserved for docker proxy registry i.e. github
-                - com.df.port.2=8082
-                - com.df.srcPort.2=80
+                - com.df.port.2=8082 # reserved for docker group repo
+                - com.df.srcPort.2=443
                 - com.df.servicePath.3=/
-                # port 8083 is reserved for docker hosted registry
-                - com.df.port.3=8083
-                - com.df.srcPort.3=8083
+                - com.df.port.3=5000 # reserved for docker hosted repo
+                - com.df.srcPort.3=5000
 
     sonarDB:
         image: postgres
@@ -95,6 +93,7 @@ services:
                 - com.df.distribute=true
                 - com.df.servicePath=/sonar
                 - com.df.port=9000
+                - com.df.srcPort=443
 
     jenkins:
         image: quay.io/shazchaudhry/docker-jenkins
@@ -124,6 +123,7 @@ services:
                 - com.df.distribute=true
                 - com.df.servicePath=/jenkins
                 - com.df.port=8080
+                - com.df.srcPort=443
 
     redis:
         image: sameersbn/redis
@@ -254,3 +254,5 @@ secrets:
       external: true
     jenkins-user:
       external: true
+    cert-xip.io.pem:
+      file: $PWD/certs/xip.io.pem
