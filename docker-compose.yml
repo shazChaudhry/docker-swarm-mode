@@ -251,8 +251,8 @@ volumes:
 
 secrets:
     jenkins-pass:
-      external: true
+      file: $PWD/secrets/jenkins/jenkins-pass.txt
     jenkins-user:
-      external: true
+      file: $PWD/secrets/jenkins/jenkins-user.txt
     cert-xip.io.pem:
       file: $PWD/certs/xip.io.pem

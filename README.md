@@ -7,37 +7,42 @@ As a member of DevOps team, I want to stand up DevOps tools _(Platform as Code)_
 
 ### Prerequisite
 Docker swarm mode environment is required
-- Use provided `Vagrantfile` if you are unable to run Docker CE natively on a local machine
+- Use provided `Vagrantfile` if you are unable to run Docker CE natively on a local machine.
 - *OR* see [Docker on AWS](https://docs.docker.com/docker-for-aws/) documentation on how to create a Docker swarm cluster on AWS
 
-### Deploy CI stack in a Virtual Box with provided Vagrantfile
-The **assumption** here is that Vagrant, Virtual Box and Gitbash are already install on your machine
-* Log into the master node in the Docker Swarm mode cluster `vagrant ssh`
-* Clone this repository `git clone https://github.com/shazChaudhry/docker-swarm-mode.git`
-* Change directory `cd docker-swarm-mode`
-* Deploy stack by run the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/)
-    ```
-    echo "admin" | docker secret create jenkins-user -
-    echo "admin" | docker secret create jenkins-pass -
-    docker stack deploy --compose-file docker-compose.yml ci
-    ```
+### Deploy CI stack in a VirtualBox with provided Vagrantfile
+The **assumption** here is that Vagrant, VirtualBox and Gitbash are already install on your machine
+* Execute the following commands in order to create a two node docker swarm mode cluster and then log in to the master node:
+  ```
+  vagrant up
+  vagrant ssh
+  cd /vagrant
+  ```
+* Deploy stack by run the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) for Jenkins and proxy.
+  * Jenkins secrets are defined in the "./secrets/jenkins" directory
+  * Proxy's secrets are defined in the "./certs" directory
+  ```
+  docker stack deploy --compose-file docker-compose.yml ci
+  ```
 * Check status of the stack services by running the following command:
-  * `docker stack services ci`
+  ```
+  docker stack services ci
+  ```
 * Once all services are up and running, proceed to testing
 
 #### Test
-* <a href="http://node1:9999"/>http://node1:9999</a> _(Visualizer)_
-* <a href="http://node1/jenkins"/>http://node1/jenkins</a> _(Jenkins)_. admin username: `admin`; Password: `admin`
-* <a href="http://node1/sonar"/>http://node1/sonar</a> _(SonarQube)_. admin username: `admin`; Password: `admin`
-* <a href="http://node1/nexus"/>http://node1/nexus</a> _(Nexus)_. admin username: `admin`; Password: `admin123`
-* <a href="http://node1/gitlab"/>http://node1/gitlab</a> _(Gitlab CE)_. admin username: `admin@example.com`; Password: `5iveL!fe`
+* <a href="http://node1:9090"/>http://node1:9090</a> _(Portainer)_
+* <a href="https://node1/jenkins"/>https://node1/jenkins</a> _(Jenkins)_. admin username: `admin`; Password: `admin`
+* <a href="https://node1/sonar"/>https://node1/sonar</a> _(SonarQube)_. admin username: `admin`; Password: `admin`
+* <a href="https://node1/nexus"/>https://node1/nexus</a> _(Nexus)_. admin username: `admin`; Password: `admin123`
+* <a href="https://node1/gitlab"/>https://node1/gitlab</a> _(Gitlab CE)_. admin username: `root`; Password: `5iveL!fe`
   * Gitlab takes a few minutes to become available so please be a little patient :)
 
 #### Clean-up
 On the swarm master node, run the following commands:
 * `docker stack rm ci` to remove the stack
 * `exit` to exit the Virtual Box
-* `vagrant destroy` to destroy the VMs
+* `vagrant destroy --force` to destroy the VMs
 
 ### Deploy CI stack on "Docker for AWS"
 It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation to create a new VPC. Follow these commands in an ssh client to log into your master node _(I'm using gitbash)_.
@@ -64,8 +69,8 @@ Clone this repo and change directory by following these commands
   cd docker-swarm-mode
   ```
 
-Start the visualizer by running:
-- `docker stack deploy -c docker-compose.visualizer.yml visualizer`
+Start the Portainer by running:
+- `docker stack deploy -c docker-compose.portainer.yml portainer`
 
 In a Docker swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
 ```
@@ -76,10 +81,8 @@ In a Docker swarm mode, only a single Compose file is accepted. If your configur
 
 You may be interested in knowing that the generated stack defines a volume plugin called [Cloudstor](https://docs.docker.com/docker-for-aws/persistent-data-volumes/). Docker containers can use a volume created with Cloudstor _(available across entire cluster)_ to mount a persistent data volume
 
- Run the combined stack
+ Run the combined stack. Please note that secrets are defined in ./secrets/jenkins and ./certs directories in this repo:
 ```
-  echo "admin" | docker secret create jenkins-user -
-  echo "admin" | docker secret create jenkins-pass -
   docker stack deploy --compose-file docker-stack.yml ci
   ```
 If in case the above _"stack deploy"_ does not work and throws an error like `yaml: control characters are not allowed`
@@ -87,11 +90,11 @@ If in case the above _"stack deploy"_ does not work and throws an error like `ya
 - _SOLUTION 2:-_ Ensure that the source path for settings.xml file mounted into jenkins' container is correct
 
 #### Test
-* http://[DefaultDNSTarget]:9999 _(Visualizer)_
-* http://[DefaultDNSTarget]/jenkins _(Jenkins)_. admin username: `admin`; Password: `admin`
-* http://[DefaultDNSTarget]/sonar> _(SonarQube)_. admin username: `admin`; Password: `admin`
-* http://[DefaultDNSTarget]/nexus _(Nexus)_. admin username: `admin`; Password: `admin123`
-* http://[DefaultDNSTarget]/gitlab _(Gitlab CE)_. admin username: `admin@example.com`; Password: `5iveL!fe`
+* http://[DefaultDNSTarget]:9090 _(Portainer)_
+* https://[DefaultDNSTarget]/jenkins _(Jenkins)_. admin username: `admin`; Password: `admin`
+* https://[DefaultDNSTarget]/sonar> _(SonarQube)_. admin username: `admin`; Password: `admin`
+* https://[DefaultDNSTarget]/nexus _(Nexus)_. admin username: `admin`; Password: `admin123`
+* https://[DefaultDNSTarget]/gitlab _(Gitlab CE)_. admin username: `root`; Password: `5iveL!fe`
   * Gitlab takes a few minutes to become available so please be a little patient :)
   * You find [DefaultDNSTarget] on the CloudFormation page on the Outputs tab
 
