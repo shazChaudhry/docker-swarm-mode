@@ -14,14 +14,17 @@ Docker swarm mode environment is required
 The **assumption** here is that Vagrant, VirtualBox and Gitbash are already install on your machine
 * Execute the following commands in order to create a two node docker swarm mode cluster and then log in to the master node:
   ```
+  git clone https://github.com/shazChaudhry/docker-swarm-mode.git && cd docker-swarm-mode
   vagrant up
   vagrant ssh
   cd /vagrant
   ```
-* Deploy stack by run the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) for Jenkins and proxy.
+
+* Deploy stack by running the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) for Jenkins and proxy.
   * Jenkins secrets are defined in the "./secrets/jenkins" directory
   * Proxy's secrets are defined in the "./certs" directory
   ```
+  docker stack deploy --compose-file docker-compose.portainer.yml portainer
   docker stack deploy --compose-file docker-compose.yml ci
   ```
 * Check status of the stack services by running the following command:
