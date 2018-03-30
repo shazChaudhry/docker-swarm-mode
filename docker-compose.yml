@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.6"
 
 services:
 
@@ -37,6 +37,7 @@ services:
     nexus:
         image: sonatype/nexus3:latest
         hostname: nexus
+        user: root
         environment:
             - NEXUS_CONTEXT=nexus
         networks:
@@ -178,7 +179,7 @@ services:
            - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
            - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
 
-           - GITLAB_ROOT_PASSWORD=5iveL!fe
+           - GITLAB_ROOT_PASSWORD=Password01
            - GITLAB_ROOT_EMAIL=admin@example.com
 
            - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
@@ -256,4 +257,5 @@ secrets:
     jenkins-user:
       file: $PWD/secrets/jenkins/jenkins-user.txt
     cert-xip.io.pem:
+      # This certificate is local testing
       file: $PWD/certs/xip.io.pem

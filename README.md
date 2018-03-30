@@ -11,14 +11,14 @@ As a member of DevOps team, I want to stand up DevOps tools _(Platform as Code)_
 
 ![alt text](pics/CI_Stack.jpg "Swarm cluster")
 
-The architecture of this stack is such that all services are behind an HTTP(S) & SSH reverse proxy; single point of entry. This reverse proxy in this case is started with self signed certificate _(See ./certs directory)_ using docker secrets
+The architecture of this stack is such that all services are behind an HTTP(S) & SSH reverse proxy; single point of entry. This reverse proxy in this case is started with self signed certificate _(See ./certs/README.md)_ using docker secrets
 
 ### Prerequisite
 Docker swarm mode environment is required
 - Use provided `Vagrantfile` if you are unable to run Docker CE natively on a local machine.
-- *OR* see [Docker on AWS](https://docs.docker.com/docker-for-aws/) documentation on how to create a Docker swarm cluster on AWS
+- *OR* see [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation on how to create a Docker swarm cluster on AWS
 
-### Deploy CI stack in a VirtualBox with provided Vagrantfile
+# Deploy CI stack in a VirtualBox with provided Vagrantfile
 The **assumption** here is that Vagrant, VirtualBox and Gitbash are already install on your machine _(my development environment was a Windows 10 Pro machine)_
 * Execute the following commands, in gitbash, in order to create a two node docker swarm mode cluster. The nodes are based on 'ubuntu/xenial64' VM. Once the cluster is created successfully, log in to the master node:
   ```
@@ -46,15 +46,20 @@ The **assumption** here is that Vagrant, VirtualBox and Gitbash are already inst
 * <a href="https://node1/jenkins"/>https://node1/jenkins</a> _(Jenkins)_. admin username: `admin`; Password: `admin`
 * <a href="https://node1/sonar"/>https://node1/sonar</a> _(SonarQube)_. admin username: `admin`; Password: `admin`
 * <a href="https://node1/nexus"/>https://node1/nexus</a> _(Nexus)_. admin username: `admin`; Password: `admin123`
-* <a href="https://node1/gitlab"/>https://node1/gitlab</a> _(Gitlab CE)_. admin username: `root`; Password: `5iveL!fe`
+  * Follow these instructions to setup docker registries; at least one should be of type proxy and should point to docker hub: https://help.sonatype.com/repomanager3/private-registry-for-docker/proxy-repository-for-docker
+  * Reserve _"8082"_ for docker group repo
+  * Reserve _"5000"_ docker hosted repo
+* <a href="https://node1/gitlab"/>https://node1/gitlab</a> _(Gitlab CE)_. admin username: `root`; Password: `Password01`
   * Gitlab takes a few minutes to become available so please be a little patient :)
   * You can also view service logs, `docker service logs -f ci_gitlab`, to check when gitlab becomes available
 
 #### Cloning repositories with HTTPS
+This is assuming you already have imported some repositories into gitlab or have created your own repos:
 * ```git config --global http.sslVerify false``` _(Turns off Git SSL Verification for a non trusted server certificate. Otherwise, you may receive 'SSL certificate problem: self signed certificate' error)_
-* ```git clone https://node1/gitlab/[GROUP_NAME]/[REPOSITORY_NAME].git```
+* ```git clone https://root:Password01@node1/gitlab/[GROUP_NAME]/[REPOSITORY_NAME].git```
 
 #### Cloning repositories with SSH
+This is assuming you have already uploaded your ssh public key to gitlab:
 * ```git clone ssh://git@node1:10022/[GROUP_NAME]/[REPOSITORY_NAME].git```
 
 
@@ -64,8 +69,8 @@ On the swarm master node, run the following commands:
 * `exit` to exit the Virtual Box
 * `vagrant destroy --force` to destroy the VMs
 
-### Deploy CI stack on "Docker for AWS"
-It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation to create a new VPC. Follow these commands in an ssh client to log into your master node _(I'm using gitbash)_.
+# Deploy CI stack on "Docker for AWS"
+It is assumed you have followed [Docker for AWS](https://docs.docker.com/docker-for-aws/) documentation to create a new VPC. Follow these commands in an ssh client to log into your master node _(I'm using gitbash on Windows 10 Pro)_.
 
 **Please** note you can not ssh directly into worker nodes. You have to use a manager node as a jump box
 ```
@@ -94,29 +99,61 @@ Start the Portainer by running:
 
 In a Docker swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
 ```
-  alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.16.1'
+  alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.20.1'
   docker-compose version
   docker-compose -f docker-compose.yml -f docker-compose.AWS.cloudstor.yml config > docker-stack.yml
   ```
 
 You may be interested in knowing that the generated stack defines a volume plugin called [Cloudstor](https://docs.docker.com/docker-for-aws/persistent-data-volumes/). Docker containers can use a volume created with Cloudstor _(available across entire cluster)_ to mount a persistent data volume
 
- Run the combined stack. Please note that secrets are defined in ./secrets/jenkins and ./certs directories in this repo:
-```
-  docker stack deploy --compose-file docker-stack.yml ci
-  ```
-If in case the above _"stack deploy"_ does not work and throws an error like `yaml: control characters are not allowed`
-- _SOLUTION 1:-_ Open the generated "docker-stack.yml" file and delete the first line starting with a WARNING
-- _SOLUTION 2:-_ Ensure that the source path for settings.xml file mounted into jenkins' container is correct
+Note:
+> Before you launch the stack, you will need to edit the generated `docker-stack.yml` file to remove warnings and to include GitLab endpoints.
+- Open the generated "docker-stack.yml" file, address WARNINGS _(top two lines)_ and then delete WARNING lines
+  - Ensure that the source path for settings.xml file mounted into jenkins' container is correct i.e. $PWD is not missing
+  - Ensure that the source path for secret files is correct i.e. $PWD is not missing
+- Find the value of [DefaultDNSTarget] on the CloudFormation page on the Outputs tab and replace _"node1"_ with this value
 
-#### Test
+ Run the combined stack. Please note that secrets are defined in ./secrets/jenkins and ./certs directories in this repo:
+  ```
+  docker stack deploy --compose-file docker-stack.yml ci
+  docker stack services ci
+  ```
+
+#### Service URLs
 * http://[DefaultDNSTarget]:9090 _(Portainer)_
 * https://[DefaultDNSTarget]/jenkins _(Jenkins)_. admin username: `admin`; Password: `admin`
 * https://[DefaultDNSTarget]/sonar> _(SonarQube)_. admin username: `admin`; Password: `admin`
 * https://[DefaultDNSTarget]/nexus _(Nexus)_. admin username: `admin`; Password: `admin123`
-* https://[DefaultDNSTarget]/gitlab _(Gitlab CE)_. admin username: `root`; Password: `5iveL!fe`
+  * Follow these instructions to setup docker registries; at least one should be of type proxy and should point to docker hub: https://help.sonatype.com/repomanager3/private-registry-for-docker/proxy-repository-for-docker
+  * Reserve _"8082"_ for docker group repo
+  * Reserve _"5000"_ docker hosted repo
+* https://[DefaultDNSTarget]/gitlab _(Gitlab CE)_. admin username: `root`; Password: `Password01`
   * Gitlab takes a few minutes to become available so please be a little patient :)
-  * You find [DefaultDNSTarget] on the CloudFormation page on the Outputs tab
+
+#### Configuring clinet for interacting with docker repos in Nexus
+* You will need to look up docker daemon documentation for your system. This was tested on ubuntu/xenial64.
+* Create a file `/etc/docker/daemon.json` and copy the following content in that file
+  ```
+  {
+  "insecure-registries": [
+    "[DefaultDNSTarget]:443",
+    "[DefaultDNSTarget]:5000"
+  ],
+  "disable-legacy-registry": true
+  }
+  ```
+* You have to restart the daemon after setting this `sudo systemctl restart docker`
+* `docker login -u admin -p admin123 [DefaultDNSTarget]:443` This should be successful and then you should be able to pull images from docker group repo i.e. `docker image pull [DefaultDNSTarget]:443/hello-world:latest`
+* `docker login -u admin -p admin123 [DefaultDNSTarget]:5000` This should be successful and then you should be able to push images to your nexus hosted repo i.e. `docker image push [DefaultDNSTarget]:5000/hello-world:latest`
+
+#### Cloning repositories with HTTPS
+This is assuming you already have imported some repositories into gitlab or have created your own repos:
+* ```git config --global http.sslVerify false``` _(Turns off Git SSL Verification for a non trusted server certificate. Otherwise, you may receive 'SSL certificate problem: self signed certificate' error)_
+* ```git clone https://root:Password01@[DefaultDNSTarget]/gitlab/[GROUP_NAME]/[REPOSITORY_NAME].git```
+
+#### Cloning repositories with SSH
+This is assuming you have already uploaded your ssh public key to gitlab:
+* ```git clone ssh://git@[DefaultDNSTarget]:10022/[GROUP_NAME]/[REPOSITORY_NAME].git```
 
 #### Clean up
 1. `docker stack rm ci`

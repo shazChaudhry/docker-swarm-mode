@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.6"
 
 services:
 
@@ -7,17 +7,12 @@ services:
     command: ["-H", "unix:///var/run/docker.sock", "--no-auth"]
     ports:
       - "9090:9000"
-    # networks:
-    #   - portaineroverlay
     volumes:
       - portainer:/data
       - "/var/run/docker.sock:/var/run/docker.sock"
     deploy:
       placement:
         constraints: [node.role == manager]
-
-# networks:
-#   portaineroverlay:
 
 volumes:
     portainer:
