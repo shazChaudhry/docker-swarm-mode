@@ -1,9 +1,17 @@
 [![Build Status on Travis](https://travis-ci.org/shazChaudhry/docker-swarm-mode.svg?branch=master)](https://travis-ci.org/shazChaudhry/docker-swarm-mode)
 
 ### User story
-As a member of DevOps team, I want to stand up DevOps tools _(Platform as Code)_ so that projects can run Coninious Integration / Delivery
+As a member of DevOps team, I want to stand up DevOps tools _(Platform as Code)_ so that projects can run Coninious Integration / Coninious Delivery (CI / CD) pipelines:
+* `Flow Proxy` - The goal of the [Docker Flow Proxy project](https://github.com/vfarcic/docker-flow-proxy) is to provide an easy way to reconfigure proxy every time a new service is deployed, or when a service is scaled. It does not try to "reinvent the wheel", but to leverage the existing leaders and combine them through an easy to use integration. It uses HAProxy as a proxy and adds custom logic that allows on-demand reconfiguration.
+* `Flow Swarm Listener` - The goal of the [Docker Flow Swarm Listener project](https://github.com/vfarcic/docker-flow-swarm-listener) is to listen to Docker Swarm events and send requests when a change occurs. At the moment, the only supported option is to send a notification when a new service is created, or an existing service was removed from the cluster.
+* `Sonatype Nexus Repository Manager 3` - Based on CentOS, a free [binary repository manager](https://github.com/sonatype/docker-nexus3) with universal support for popular repository formats such as maven, yum, raw, docker and many other
+* `SonarQube` - [SonarQube](https://github.com/SonarSource/sonarqube) provides the capability to not only show health of an application but also to highlight issues newly introduced. With a Quality Gate in place, you can fix the leak and therefore improve code quality systematically
+* `Jenkins` - As an extensible automation server, [Jenkins](https://hub.docker.com/r/jenkinsci/blueocean/) can be used as a simple CI server or turned into the continuous delivery hub for any project
+* `GitLab Community Edition (CE)` -  [Gitlab](https://github.com/sameersbn/docker-gitlab) is an open source end-to-end software development platform with built-in version control, issue tracking, code review, CI/CD, and more. Self-host GitLab CE on your own servers
 
 ![alt text](pics/CI_Stack.jpg "Swarm cluster")
+
+The architecture of this stack is such that all services are behind an HTTP(S) & SSH reverse proxy; single point of entry. This reverse proxy in this case is started with self signed certificate _(See ./certs directory)_ using docker secrets
 
 ### Prerequisite
 Docker swarm mode environment is required
@@ -11,12 +19,12 @@ Docker swarm mode environment is required
 - *OR* see [Docker on AWS](https://docs.docker.com/docker-for-aws/) documentation on how to create a Docker swarm cluster on AWS
 
 ### Deploy CI stack in a VirtualBox with provided Vagrantfile
-The **assumption** here is that Vagrant, VirtualBox and Gitbash are already install on your machine
-* Execute the following commands in order to create a two node docker swarm mode cluster and then log in to the master node:
+The **assumption** here is that Vagrant, VirtualBox and Gitbash are already install on your machine _(my development environment was a Windows 10 Pro machine)_
+* Execute the following commands, in gitbash, in order to create a two node docker swarm mode cluster. The nodes are based on 'ubuntu/xenial64' VM. Once the cluster is created successfully, log in to the master node:
   ```
   git clone https://github.com/shazChaudhry/docker-swarm-mode.git && cd docker-swarm-mode
   vagrant up
-  vagrant ssh
+  vagrant ssh node1
   cd /vagrant
   ```
 
@@ -31,15 +39,24 @@ The **assumption** here is that Vagrant, VirtualBox and Gitbash are already inst
   ```
   docker stack services ci
   ```
-* Once all services are up and running, proceed to testing
+* Once all services are up and running, proceed to the next step
 
-#### Test
+#### Service URLs
 * <a href="http://node1:9090"/>http://node1:9090</a> _(Portainer)_
 * <a href="https://node1/jenkins"/>https://node1/jenkins</a> _(Jenkins)_. admin username: `admin`; Password: `admin`
 * <a href="https://node1/sonar"/>https://node1/sonar</a> _(SonarQube)_. admin username: `admin`; Password: `admin`
 * <a href="https://node1/nexus"/>https://node1/nexus</a> _(Nexus)_. admin username: `admin`; Password: `admin123`
 * <a href="https://node1/gitlab"/>https://node1/gitlab</a> _(Gitlab CE)_. admin username: `root`; Password: `5iveL!fe`
   * Gitlab takes a few minutes to become available so please be a little patient :)
+  * You can also view service logs, `docker service logs -f ci_gitlab`, to check when gitlab becomes available
+
+#### Cloning repositories with HTTPS
+* ```git config --global http.sslVerify false``` _(Turns off Git SSL Verification for a non trusted server certificate. Otherwise, you may receive 'SSL certificate problem: self signed certificate' error)_
+* ```git clone https://node1/gitlab/[GROUP_NAME]/[REPOSITORY_NAME].git```
+
+#### Cloning repositories with SSH
+* ```git clone ssh://git@node1:10022/[GROUP_NAME]/[REPOSITORY_NAME].git```
+
 
 #### Clean-up
 On the swarm master node, run the following commands:

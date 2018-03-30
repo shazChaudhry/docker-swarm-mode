@@ -3,7 +3,7 @@ version: "3.5"
 services:
 
     swarm-listener:
-        image: vfarcic/docker-flow-swarm-listener
+        image: vfarcic/docker-flow-swarm-listener:latest
         hostname: swarm-listener
         networks:
             - proxy
@@ -17,7 +17,7 @@ services:
                 constraints: [node.role == manager]
 
     proxy:
-        image: vfarcic/docker-flow-proxy
+        image: vfarcic/docker-flow-proxy:latest
         hostname: proxy
         ports:
             - "80:80"
@@ -35,7 +35,7 @@ services:
 
     # See this blog on how to set up docker registry (ports 8082 and 8083 are for docker proxy and hosted repos): https://blog.sonatype.com/using-nexus-3-as-your-repository-part-3-docker-images
     nexus:
-        image: sonatype/nexus3
+        image: sonatype/nexus3:latest
         hostname: nexus
         environment:
             - NEXUS_CONTEXT=nexus
@@ -59,7 +59,7 @@ services:
                 - com.df.srcPort.3=5000
 
     sonarDB:
-        image: postgres
+        image: postgres:latest
         hostname: sonarDB
         environment:
             - POSTGRES_USER=sonar
@@ -71,7 +71,7 @@ services:
             - postgresql_data:/var/lib/postgresql/data
 
     sonarqube:
-        image: sonarqube
+        image: sonarqube:latest
         hostname: sonarqube
         environment:
             - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarDB:5432/sonar
@@ -96,7 +96,7 @@ services:
                 - com.df.srcPort=443
 
     jenkins:
-        image: quay.io/shazchaudhry/docker-jenkins
+        image: quay.io/shazchaudhry/docker-jenkins:latest
         user: root
         hostname: jenkins
         environment:
@@ -126,7 +126,7 @@ services:
                 - com.df.srcPort=443
 
     redis:
-        image: sameersbn/redis
+        image: sameersbn/redis:latest
         hostname: redis
         networks:
             - gitlab
@@ -135,7 +135,7 @@ services:
         command: ["--loglevel warning"]
 
     gitlabDB:
-        image: sameersbn/postgresql
+        image: sameersbn/postgresql:latest
         hostname: gitlabDB
         networks:
             - gitlab
@@ -148,7 +148,7 @@ services:
             - DB_EXTENSION=pg_trgm
 
     gitlab:
-        image: sameersbn/gitlab
+        image: sameersbn/gitlab:latest
         hostname: gitlab
         networks:
             - gitlab
@@ -210,7 +210,7 @@ services:
                 - com.df.reqMode.2=tcp
 
     # keycloak:
-    #     image: jboss/keycloak
+    #     image: jboss/keycloak:latest
     #     hostname: keycloak
     #     environment:
     #         - KEYCLOAK_PASSWORD=admin
