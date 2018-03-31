@@ -30,56 +30,14 @@ volumes:
       iops: 1000
       backing: relocatable
   postgresql:
-    driver: "cloudstor:aws"
-    driver_opts:
-      ebstype: gp2
-      size: 25
-      iops: 1000
-      backing: relocatable
   postgresql_data:
-    driver: "cloudstor:aws"
-    driver_opts:
-      ebstype: gp2
-      size: 25
-      iops: 1000
-      backing: relocatable
   redis_data:
-    driver: "cloudstor:aws"
-    driver_opts:
-      ebstype: gp2
-      size: 25
-      iops: 1000
-      backing: relocatable
   sonarqube_bundled_plugins:
-    driver: "cloudstor:aws"
-    driver_opts:
-      ebstype: gp2
-      size: 25
-      iops: 1000
-      backing: relocatable
   sonarqube_conf:
-    driver: "cloudstor:aws"
-    driver_opts:
-      ebstype: gp2
-      size: 25
-      iops: 1000
-      backing: relocatable
   sonarqube_data:
-    driver: "cloudstor:aws"
-    driver_opts:
-      ebstype: gp2
-      size: 25
-      iops: 1000
-      backing: relocatable
   sonarqube_extensions:
-    driver: "cloudstor:aws"
-    driver_opts:
-      ebstype: gp2
-      size: 25
-      iops: 1000
-      backing: relocatable
 
 secrets:
     cert-xip.io.pem:
       # This certificate is for testing in AWS London region
-      file: "${PWD}/certs/ci.pem"
+      file: $PWD/certs/ci.pem
