@@ -123,6 +123,7 @@ Note:
 * http://[DefaultDNSTarget]:9090 _(Portainer)_
 * https://[DefaultDNSTarget]/jenkins _(Jenkins)_. admin username: `admin`; Password: `admin`
 * https://[DefaultDNSTarget]/sonar> _(SonarQube)_. admin username: `admin`; Password: `admin`
+  * Install / uninstall plugins as required by going to "Administration -> Marketplace" section
 * https://[DefaultDNSTarget]/nexus _(Nexus)_. admin username: `admin`; Password: `admin123`
   * Follow these instructions to setup docker registries; at least one should be of type proxy and should point to docker hub: https://help.sonatype.com/repomanager3/private-registry-for-docker/proxy-repository-for-docker
   * Reserve _"8082"_ for docker group repo
@@ -146,16 +147,36 @@ Note:
 * `docker login -u admin -p admin123 [DefaultDNSTarget]:443` This should be successful and then you should be able to pull images from docker group repo i.e. `docker image pull [DefaultDNSTarget]:443/hello-world:latest`
 * `docker login -u admin -p admin123 [DefaultDNSTarget]:5000` This should be successful and then you should be able to push images to your nexus hosted repo i.e. `docker image push [DefaultDNSTarget]:5000/hello-world:latest`
 
+#### Cloning repositories with SSH
+This is assuming your ssh public key has already been uploaded to gitlab:
+* ```git clone ssh://git@[DefaultDNSTarget]:10022/[GROUP_NAME]/[REPOSITORY_NAME].git```
+
 #### Cloning repositories with HTTPS
 This is assuming you already have imported some repositories into gitlab or have created your own repos:
 * ```git config --global http.sslVerify false``` _(Turns off Git SSL Verification for a non trusted server certificate. Otherwise, you may receive 'SSL certificate problem: self signed certificate' error)_
-* ```git clone https://root:Password01@[DefaultDNSTarget]/gitlab/[GROUP_NAME]/[REPOSITORY_NAME].git```
-
-#### Cloning repositories with SSH
-This is assuming you have already uploaded your ssh public key to gitlab:
-* ```git clone ssh://git@[DefaultDNSTarget]:10022/[GROUP_NAME]/[REPOSITORY_NAME].git```
+* ```git clone https://root:Password01@[DefaultDNSTarget]/gitlab/[GROUP_NAME]/[REPOSITORY_NAME].git``` _(username & password will be required if repositories are private)_
 
 #### Clean up
 1. `docker stack rm ci`
 2. `swarm-exec docker system prune --volumes -af`
 3. Before deleting a Docker4AWS stack through CloudFormation, you should remove all relocatable Cloudstor volumes using docker volume rm from within the stack. EBS volumes corresponding to relocatable Cloudstor volumes are not automatically deleted as part of the CloudFormation stack deletion
+
+# Run [Jenkins declarative](https://jenkins.io/doc/book/pipeline/syntax) pipeline
+- In the GitLab instance, import [spring-petclinic](https://github.com/shazChaudhry/spring-petclinic) project from GitHub: https://github.com/shazChaudhry/spring-petclinic ![alt text](pics/spring-petclinic.PNG "Spring Petclinic")
+- In the Jenkins instance, create a new Blue Ocean pipeline project:
+  - Where do you store your code? = `Git` _(Keep an eye on the [support for Gitlab](https://jenkins.io/projects/blueocean/roadmap/) in Blue Ocean. At the time of writing this, the plugin was still in planned phase)_
+  - Repository URL = `ssh://git@gitlab:22/java/spring-petclinic.git` ![alt text](pics/create-pipeline.PNG "Create Pipeline")
+- When informed to register the public SSH key with your Git server to continue, copy the generated key
+- In the GitLab servicer, go to "Admin area -> Deploy Keys". And then paste the key ![alt text](pics/admin-deploy-keys.PNG "Admin Deloy Keys")
+- Once "Deloy Key" has been created, head over to the "spring-petclinic" project in GitLab
+- Go to "Settings -> Repository" and then expand the Deploy Keys section. Ensure that you enable the deploy key at the bottom of the page ![alt text](pics/project-deploy-keys.PNG "Enable Project Deloy Keys")
+- Now, in Jenkins, click on the "Create pipeline". A job in jenkins will be created which then will:
+  - Build maven packages using Nexus maven repos
+  - Run static code analysis and publish report on SonarQube instance
+  - Inform GitLab of the build status
+
+After a successful build, a pipeline should look like this: ![alt text](pics/Jenkins-pipeline.PNG "Jenkins Blue Ocean pipeline")
+
+After a successful build, maven build artifacts should be deployed in maven snapshot repository: ![alt text](pics/maven-snapshot-repo.PNG "Maven Snapshot Repository")
+
+After a successful build, SonarQube reports should be available: ![alt text](pics/sonarqube.PNG "SonarQube Report")
