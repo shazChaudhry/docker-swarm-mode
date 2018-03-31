@@ -157,5 +157,5 @@ This is assuming you have already uploaded your ssh public key to gitlab:
 
 #### Clean up
 1. `docker stack rm ci`
-2. `swarm-exec docker system prune --volumes -a`
+2. `swarm-exec docker system prune --volumes -af`
 3. Before deleting a Docker4AWS stack through CloudFormation, you should remove all relocatable Cloudstor volumes using docker volume rm from within the stack. EBS volumes corresponding to relocatable Cloudstor volumes are not automatically deleted as part of the CloudFormation stack deletion
