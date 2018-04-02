@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.6"
 
 volumes:
   gitlabPostgresql_data:
@@ -29,3 +29,15 @@ volumes:
       size: 25
       iops: 1000
       backing: relocatable
+  postgresql:
+  postgresql_data:
+  redis_data:
+  sonarqube_bundled_plugins:
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
+
+secrets:
+    cert-xip.io.pem:
+      # This certificate is for testing in AWS London region
+      file: $PWD/certs/ci.pem
