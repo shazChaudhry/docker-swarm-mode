@@ -24,7 +24,8 @@ The **assumption** here is that Vagrant, VirtualBox and Gitbash are already inst
   ```
   git clone https://github.com/shazChaudhry/docker-swarm-mode.git && cd docker-swarm-mode
   vagrant up
-  vagrant ssh node1
+  vagrant ssh node1 (Log in to the master node)
+  docker node ls (confirm that there are two nodes in the cluster; master and worker)
   cd /vagrant
   ```
 
@@ -161,7 +162,8 @@ This is assuming you already have imported some repositories into gitlab or have
 2. `swarm-exec docker system prune --volumes -af`
 3. Before deleting a Docker4AWS stack through CloudFormation, you should remove all relocatable Cloudstor volumes using docker volume rm from within the stack. EBS volumes corresponding to relocatable Cloudstor volumes are not automatically deleted as part of the CloudFormation stack deletion
 
-# Run [Jenkins declarative](https://jenkins.io/doc/book/pipeline/syntax) pipeline
+# Setup [Jenkins declarative](https://jenkins.io/doc/book/pipeline/syntax) pipeline
+Steps to setting up this pipeline should be identical regardless of the deployment methods shown above; Local or AWS
 - In the GitLab instance, import [spring-petclinic](https://github.com/shazChaudhry/spring-petclinic) project from GitHub: https://github.com/shazChaudhry/spring-petclinic ![alt text](pics/spring-petclinic.PNG "Spring Petclinic")
 - In the Jenkins instance, create a new Blue Ocean pipeline project:
   - Where do you store your code? = `Git` _(Keep an eye on the [support for Gitlab](https://jenkins.io/projects/blueocean/roadmap/) in Blue Ocean. At the time of writing this, the plugin was still in planned phase)_
