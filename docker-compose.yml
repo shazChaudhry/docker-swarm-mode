@@ -3,7 +3,7 @@ version: "3.6"
 services:
 
     swarm-listener:
-        image: vfarcic/docker-flow-swarm-listener:latest
+        image: dockerflow/docker-flow-swarm-listener:latest
         hostname: swarm-listener
         networks:
             - proxy
@@ -17,7 +17,7 @@ services:
                 constraints: [node.role == manager]
 
     proxy:
-        image: vfarcic/docker-flow-proxy:latest
+        image: dockerflow/docker-flow-proxy:latest
         hostname: proxy
         ports:
             - "80:80"
