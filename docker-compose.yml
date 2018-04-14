@@ -97,7 +97,7 @@ services:
                 - com.df.srcPort=443
 
     jenkins:
-        image: quay.io/shazchaudhry/docker-jenkins:latest
+        image: shazchaudhry/docker-jenkins:latest
         user: root
         hostname: jenkins
         environment:
