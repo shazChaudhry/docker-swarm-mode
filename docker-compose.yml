@@ -33,7 +33,7 @@ services:
         secrets:
             - cert-xip.io.pem
 
-    # See this blog on how to set up docker registry (ports 8082 and 8083 are for docker proxy and hosted repos): https://blog.sonatype.com/using-nexus-3-as-your-repository-part-3-docker-images
+    # See this blog on how to set up docker registry (ports 8082 and 5000 are for docker proxy and hosted repos): https://blog.sonatype.com/using-nexus-3-as-your-repository-part-3-docker-images
     nexus:
         image: sonatype/nexus3:latest
         hostname: nexus
