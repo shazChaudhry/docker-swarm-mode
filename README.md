@@ -91,8 +91,9 @@ Clone this repo and change directory by following these commands:
 Start the Portainer by running:
 - `docker stack deploy -c docker-compose.portainer.yml portainer`
 
-Note:
+Notes:
 > In a Docker swarm mode, only a single Compose file is accepted. If your configuration is split between multiple Compose files, e.g. a base configuration and environment-specific overrides, you can combine these by passing them to docker-compose config with the -f option and redirecting the merged output into a new file.
+
 > These instructions are only needed if files to be merged have been edited / updated for any reason. For your info, a default "docker-stack.yml" has already been generated and is ready to be used
 - `alias docker-compose='docker run --interactive --tty --rm --name docker-compose --volume $PWD:/compose --workdir /compose docker/compose:1.23.1'`
 - `docker-compose version`
