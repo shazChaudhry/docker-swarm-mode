@@ -6,7 +6,6 @@
 *.exe
 *.o
 *.so
-docker-stack.yml
 
 # Packages #
 ############

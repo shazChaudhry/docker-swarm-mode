@@ -1,0 +1,239 @@
+networks:
+  attachable:
+    attachable: true
+  gitlab: {}
+  proxy: {}
+  sonarqube: {}
+secrets:
+  cert-xip.io.pem:
+    file: $PWD/certs/ci.pem
+  jenkins-pass:
+    file: $PWD/secrets/jenkins/jenkins-pass.txt
+  jenkins-user:
+    file: $PWD/secrets/jenkins/jenkins-user.txt
+services:
+  gitlab:
+    deploy:
+      labels:
+        com.df.distribute: "true"
+        com.df.httpsOnly.1: "true"
+        com.df.notify: "true"
+        com.df.port.1: '80'
+        com.df.port.2: '22'
+        com.df.reqMode.2: tcp
+        com.df.servicePath.1: /gitlab
+        com.df.srcPort.1: '443'
+        com.df.srcPort.2: '10022'
+    environment:
+      DB_ADAPTER: postgresql
+      DB_HOST: gitlabDB
+      DB_NAME: gitlabhq_production
+      DB_PASS: password
+      DB_PORT: '5432'
+      DB_USER: gitlab
+      DEBUG: "false"
+      GITLAB_BACKUP_SCHEDULE: daily
+      GITLAB_BACKUP_TIME: 01:00
+      GITLAB_EMAIL: notifications@example.com
+      GITLAB_EMAIL_REPLY_TO: noreply@example.com
+      GITLAB_HOST: ${DefaultDNSTarget:-node1}
+      GITLAB_HTTPS: "true"
+      GITLAB_INCOMING_EMAIL_ADDRESS: reply@example.com
+      GITLAB_NOTIFY_ON_BROKEN_BUILDS: "true"
+      GITLAB_NOTIFY_PUSHER: "false"
+      GITLAB_PORT: '443'
+      GITLAB_RELATIVE_URL_ROOT: /gitlab
+      GITLAB_ROOT_EMAIL: admin@example.com
+      GITLAB_ROOT_PASSWORD: Password01
+      GITLAB_SECRETS_DB_KEY_BASE: long-and-random-alphanumeric-string
+      GITLAB_SECRETS_OTP_KEY_BASE: long-and-random-alphanumeric-string
+      GITLAB_SECRETS_SECRET_KEY_BASE: long-and-random-alphanumeric-string
+      GITLAB_SSH_PORT: '10022'
+      REDIS_HOST: redis
+      REDIS_PORT: '6379'
+      SSL_SELF_SIGNED: "true"
+    hostname: gitlab
+    image: sameersbn/gitlab:latest
+    networks:
+      gitlab: null
+      proxy: null
+    volumes:
+    - gitlab_data:/home/git/data:rw
+  gitlabDB:
+    environment:
+      DB_EXTENSION: pg_trgm
+      DB_NAME: gitlabhq_production
+      DB_PASS: password
+      DB_USER: gitlab
+    hostname: gitlabDB
+    image: sameersbn/postgresql:latest
+    networks:
+      gitlab: null
+    volumes:
+    - gitlabPostgresql_data:/var/lib/postgresql:rw
+  jenkins:
+    deploy:
+      labels:
+        com.df.distribute: "true"
+        com.df.notify: "true"
+        com.df.port: '8080'
+        com.df.servicePath: /jenkins
+        com.df.srcPort: '443'
+      placement:
+        constraints:
+        - node.role == manager
+    environment:
+      JENKINS_OPTS: '''--prefix=/jenkins'''
+    hostname: jenkins
+    image: shazchaudhry/docker-jenkins:latest
+    networks:
+      attachable: null
+      proxy: null
+    secrets:
+    - source: jenkins-pass
+    - source: jenkins-user
+    user: root
+    volumes:
+    - $PWD/maven:/maven:rw
+    - jenkins_home:/var/jenkins_home:rw
+    - /var/run/docker.sock:/var/run/docker.sock:rw
+  nexus:
+    deploy:
+      labels:
+        com.df.distribute: "true"
+        com.df.notify: "true"
+        com.df.port.1: '8081'
+        com.df.port.2: '8082'
+        com.df.port.3: '5000'
+        com.df.servicePath.1: /nexus
+        com.df.servicePath.2: /
+        com.df.servicePath.3: /
+        com.df.srcPort.1: '443'
+        com.df.srcPort.2: '443'
+        com.df.srcPort.3: '5000'
+    environment:
+      NEXUS_CONTEXT: nexus
+    hostname: nexus
+    image: sonatype/nexus3:latest
+    networks:
+      attachable: null
+      proxy: null
+    user: root
+    volumes:
+    - nexus_data:/nexus-data:rw
+  proxy:
+    environment:
+      BIND_PORTS: '5000'
+      LISTENER_ADDRESS: swarm-listener
+      MODE: swarm
+    hostname: proxy
+    image: dockerflow/docker-flow-proxy:latest
+    networks:
+      proxy: null
+    ports:
+    - published: 80
+      target: 80
+    - published: 443
+      target: 443
+    - published: 5000
+      target: 5000
+    - published: 10022
+      target: 10022
+    secrets:
+    - source: cert-xip.io.pem
+  redis:
+    command:
+    - --loglevel warning
+    hostname: redis
+    image: sameersbn/redis:latest
+    networks:
+      gitlab: null
+    volumes:
+    - redis_data:/var/lib/redis:rw
+  sonarDB:
+    environment:
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_USER: sonar
+    hostname: sonarDB
+    image: postgres:latest
+    networks:
+      sonarqube: null
+    volumes:
+    - postgresql:/var/lib/postgresql:rw
+    - postgresql_data:/var/lib/postgresql/data:rw
+  sonarqube:
+    command:
+    - -Dsonar.web.context=/sonar
+    deploy:
+      labels:
+        com.df.distribute: "true"
+        com.df.notify: "true"
+        com.df.port: '9000'
+        com.df.servicePath: /sonar
+        com.df.srcPort: '443'
+    environment:
+      SONARQUBE_JDBC_PASSWORD: sonar
+      SONARQUBE_JDBC_URL: jdbc:postgresql://sonarDB:5432/sonar
+      SONARQUBE_JDBC_USERNAME: sonar
+    hostname: sonarqube
+    image: sonarqube:latest
+    networks:
+      attachable: null
+      proxy: null
+      sonarqube: null
+    volumes:
+    - sonarqube_conf:/opt/sonarqube/conf:rw
+    - sonarqube_data:/opt/sonarqube/data:rw
+    - sonarqube_extensions:/opt/sonarqube/extensions:rw
+    - sonarqube_bundled_plugins:/opt/sonarqube/lib/bundled-plugins:rw
+  swarm-listener:
+    deploy:
+      placement:
+        constraints:
+        - node.role == manager
+    environment:
+      DF_NOTIFY_CREATE_SERVICE_URL: http://proxy:8080/v1/docker-flow-proxy/reconfigure
+      DF_NOTIFY_REMOVE_SERVICE_URL: http://proxy:8080/v1/docker-flow-proxy/remove
+    hostname: swarm-listener
+    image: dockerflow/docker-flow-swarm-listener:latest
+    networks:
+      proxy: null
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:rw
+version: '3.6'
+volumes:
+  gitlabPostgresql_data:
+    driver: cloudstor:aws
+    driver_opts:
+      backing: relocatable
+      ebstype: gp2
+      iops: '1000'
+      size: '25'
+  gitlab_data:
+    driver: cloudstor:aws
+    driver_opts:
+      backing: relocatable
+      ebstype: gp2
+      iops: '1000'
+      size: '25'
+  jenkins_home:
+    driver: cloudstor:aws
+    driver_opts:
+      backing: relocatable
+      ebstype: gp2
+      iops: '1000'
+      size: '25'
+  nexus_data:
+    driver: cloudstor:aws
+    driver_opts:
+      backing: relocatable
+      ebstype: gp2
+      iops: '1000'
+      size: '25'
+  postgresql: {}
+  postgresql_data: {}
+  redis_data: {}
+  sonarqube_bundled_plugins: {}
+  sonarqube_conf: {}
+  sonarqube_data: {}
+  sonarqube_extensions: {}
