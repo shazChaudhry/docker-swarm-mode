@@ -43,7 +43,7 @@ Deploy stack by running the following commands which will utilize [Docker secret
 * Once all services are up and running, proceed to the next step
 
 #### Service URLs
-* <a href="http://node1:9000"/>http://node1:9090</a> _(Portainer)_
+* <a href="http://node1:9000"/>http://node1:9000</a> _(Portainer)_
 * <a href="https://node1/jenkins"/>https://node1/jenkins</a> _(Jenkins)_. admin username: `admin`; Password: `admin`
 * <a href="https://node1/sonar"/>https://node1/sonar</a> _(SonarQube)_. admin username: `admin`; Password: `admin`
 * <a href="https://node1/nexus"/>https://node1/nexus</a> _(Nexus)_. admin username: `admin`; Password: `admin123`
