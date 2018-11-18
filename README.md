@@ -106,7 +106,7 @@ Note:
   - Ensure that the source path for secret files is correct i.e. $PWD is not missing
 
  Run the combined stack. Please note that secrets are defined in ./secrets/jenkins and ./certs directories in this repo:
- - `export DefaultDNSTarget=find this value on your CloudFormation page in AWS console`
+ - `export DefaultDNSTarget=<<find this value on your CloudFormation page in AWS console>>`
  - `docker stack deploy --compose-file docker-stack.yml ci` You may be interested in knowing that this stack defines a volume plugin called [Cloudstor](https://docs.docker.com/docker-for-aws/persistent-data-volumes/). Docker containers can use a volume created with Cloudstor _(available across entire cluster)_ to mount a persistent data volume
  - `docker stack services ci`
 
