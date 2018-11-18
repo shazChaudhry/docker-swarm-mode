@@ -43,7 +43,7 @@ Deploy stack by running the following commands which will utilize [Docker secret
 * Once all services are up and running, proceed to the next step
 
 #### Service URLs
-* <a href="http://node1:9090"/>http://node1:9090</a> _(Portainer)_
+* <a href="http://node1:9000"/>http://node1:9090</a> _(Portainer)_
 * <a href="https://node1/jenkins"/>https://node1/jenkins</a> _(Jenkins)_. admin username: `admin`; Password: `admin`
 * <a href="https://node1/sonar"/>https://node1/sonar</a> _(SonarQube)_. admin username: `admin`; Password: `admin`
 * <a href="https://node1/nexus"/>https://node1/nexus</a> _(Nexus)_. admin username: `admin`; Password: `admin123`
@@ -114,7 +114,7 @@ Note:
  > If Jenkins in this stack is unable to run sibling containers, set appropriate permission: `sudo setfacl -m u:1000:rw /var/run/docker.sock` on all nodes. If this command fails then a workround is - `sudo chmod 666 /var/run/docker.sock` on all nodes
 
 #### Service URLs
-* http://[DefaultDNSTarget]:9090 _(Portainer)_
+* http://[DefaultDNSTarget]:9000 _(Portainer)_
 * https://[DefaultDNSTarget]/jenkins _(Jenkins)_. admin username: `admin`; Password: `admin`
 * https://[DefaultDNSTarget]/sonar> _(SonarQube)_. admin username: `admin`; Password: `admin`
   * Install / uninstall plugins as required by going to "Administration -> Marketplace" section
