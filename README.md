@@ -29,7 +29,7 @@ Execute the following commands, in gitbash, in order to create a two-node docker
  - `docker node ls` _(confirm that there are two nodes in the cluster; master and worker)_
  - `cd /vagrant`
 
-* Deploy stack by running the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) for Jenkins and proxy.
+Deploy stack by running the following commands which will utilize [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) for Jenkins and proxy.
   * Jenkins secrets are defined in the "./secrets/jenkins" directory
   * Proxy's secrets are defined in the "./certs" directory
   ```
