@@ -22,7 +22,7 @@ Docker swarm mode environment is required
 The **assumption** here is that Vagrant, VirtualBox and Gitbash are already install on your machine _(my development environment was a Windows 10 Pro machine)_
 
 Execute the following commands, in gitbash, in order to create a two-node docker swarm mode cluster. The nodes are based on 'ubuntu/xenial64' VM. Once the cluster is created successfully, log in to the master node:
- - `git clone https://github.com/shazChaudhry/docker-swarm-mode.git` 
+ - `git clone https://github.com/shazChaudhry/docker-swarm-mode.git`
  - `cd docker-swarm-mode`
  - `vagrant up`
  - `vagrant ssh node1` _(Log in to the master node)_
@@ -67,7 +67,7 @@ This is assuming you have already uploaded your ssh public key to gitlab:
 #### Clean-up
 On the swarm master node, run the following commands:
 * `docker stack rm ci` to remove the stack
-* `exit` to exit the Virtual Box
+* `exit` to exit the vagrant box
 * `vagrant destroy --force` to destroy the VMs
 
 # Deploy CI stack on "Docker for AWS"
